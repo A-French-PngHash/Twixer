@@ -1,0 +1,5 @@
+SELECT * FROM Tweet
+JOIN User ON (User.id = Tweet.author_id)
+JOIN Follow ON (User.id = Follow.followed_id)
+WHERE (Follow.following = )
+ORDER BY postDate DESC;
