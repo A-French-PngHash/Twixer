@@ -38,6 +38,7 @@ class MiddleNavBarState extends State<MiddleNavBar> {
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: widgetList,
       ),
     );

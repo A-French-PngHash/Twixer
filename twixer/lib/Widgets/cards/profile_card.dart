@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:twixer/DataModel/profile_card_model.dart';
-import 'package:twixer/DataModel/user_model.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 import 'package:twixer/Widgets/profile_picture.dart';
 

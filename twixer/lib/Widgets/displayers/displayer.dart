@@ -1,9 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:twixer/DataLogic/auth.dart';
-import 'package:twixer/DataModel/tweet_model.dart';
 import 'package:twixer/Widgets/buttons/button_with_loading.dart';
 import 'package:twixer/Widgets/error_handler.dart';
-import 'package:twixer/Widgets/cards/tweet_card.dart';
 
 /// Displayer is a convenient way to show a list of widget that is fetched from a suplied
 /// `get` function returning a future. It asynchronously loads elements as the list is browsed.
@@ -40,6 +38,9 @@ class _DisplayerState<T> extends State<Displayer> {
     setState(() {
       _loadingData = true;
     });
+    compute((a) async{
+
+    }, (30, _itemCount));
     widget.get(30, _itemCount).then((value) {
       setState(() {
         final res = _handler.handle(value);

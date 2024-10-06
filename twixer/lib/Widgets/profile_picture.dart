@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/profile_picture.dart';
-import 'package:twixer/Widgets/cards/profile_card.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 
 /// Automatically fetches the profile picture for the given user.

@@ -26,6 +26,8 @@ class _ProfileViewState extends State<ProfileView> {
   bool _loading = true;
   bool success = false;
   UserModel userModel = UserModel(0, 0, "Loading...", "Loading...", DateTime.now(), DateTime.now());
+  String orderBy = "date";
+  final _orders = ["date", "popularity", "number_of_response"];
 
   @override
   void initState() {
@@ -65,22 +67,36 @@ class _ProfileViewState extends State<ProfileView> {
           height: 220,
           child: buildUpperStack(),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              //buildUserSummary(),
-              Text("Posts"),
-              //MiddleNavBar(labels: ["Latest", "Most liked", "Most commented"], onSelect: (number) {}),
-             TweetDisplayer(
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildUserSummary(),
+                Container(
+                  child: MiddleNavBar(
+                      labels: ["Latest", "Most liked", "Most commented"],
+                      onSelect: (number) {
+                        setState(() {
+                          orderBy = _orders[number];
+                        });
+                      }),
+                  padding: EdgeInsets.only(top: 20, bottom: 8),
+                ),
+                Expanded(
+                  child: TweetDisplayer(
                     get: (limit, offset) async {
                       return await getProfileTweets(
-                          username: widget.username, orderBy: "date", limit: limit, offset: offset);
+                          username: widget.username, orderBy: orderBy, limit: limit, offset: offset);
                     },
-                    connection: widget.connection),
-            ],
+                    connection: widget.connection,
+                    key: UniqueKey(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

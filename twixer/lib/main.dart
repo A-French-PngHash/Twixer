@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/Views/navigation.dart';
-import 'package:twixer/Views/profile.dart';
-import 'package:twixer/Widgets/error_handler.dart';
 
 void main() {
   runApp(const MainApp());

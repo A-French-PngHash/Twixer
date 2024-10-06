@@ -3,7 +3,6 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/Views/homepage.dart';
 import 'package:twixer/Views/profile.dart';
 import 'package:twixer/Views/search.dart';
-import 'package:twixer/Views/searching.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 
 class Navigation extends StatefulWidget {

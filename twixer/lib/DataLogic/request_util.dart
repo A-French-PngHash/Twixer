@@ -4,38 +4,42 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:twixer/config.dart';
 
-Future<(bool, Map)> requestApi(
-  Future<Response> Function(Uri, {Map<String, String>? headers}) method,
-  String subroute,
-  Map<String, String> headers,
-) async {
-  try {
-    final response = await method(
-      Uri.parse(
-        "$API_ROUTE$subroute",
-      ),
-      headers: headers,
-    ).timeout(Duration(seconds: 3));
-    print("$API_ROUTE$subroute");
+class RequesterWithCacheInterceptor {
+  final _cache = {};
 
-    if (response.statusCode == 200) {
-      if (response.contentLength == 0) {
-        return (true, {});
+  Future<(bool, Map)> requestApi(
+    Future<Response> Function(Uri, {Map<String, String>? headers}) method,
+    String subroute,
+    Map<String, String> headers, {
+    bool cache = false,
+    int expirationDuration = 0,
+  }) async {
+    await Future.delayed(Duration.zero, () {});
+    try {
+      final response = await method(
+        Uri.parse(
+          "$API_ROUTE$subroute",
+        ),
+        headers: headers,
+      ).timeout(Duration(seconds: 3));
+      print("$API_ROUTE$subroute");
+
+      if (response.statusCode == 200) {
+        if (response.contentLength == 0) {
+          return (true, {});
+        } else {
+          final Map parsed = json.decode(response.body);
+          return (true, parsed);
+        }
       } else {
         final Map parsed = json.decode(response.body);
-        return (true, parsed);
+        return (false, parsed);
       }
-    } else {
-      final Map parsed = json.decode(response.body);
-      return (false, parsed);
+    } on TimeoutException {
+      return (false, {"error": "Request to : $subroute. Timeout error. Verify your connection"});
+    } on Exception catch (e) {
+      return (false, {"error": "Request to : $subroute. ${e.toString()}"});
     }
-  } on TimeoutException {
-    return (
-      false,
-      {"error": "Request to : $subroute. Timeout error. Verify your connection"}
-    );
-  } on Exception catch (e) {
-    return (false, {"error": "Request to : $subroute. ${e.toString()}"});
   }
 }
 
@@ -43,9 +47,7 @@ Future<(bool, Map)> requestApi(
 /// handled the sameway.
 /// - String key : The key under which the data is stored in the result.
 (bool, List<T>?, String?) handleListResponse<T>(
-    (bool, Map<dynamic, dynamic>) result,
-    String key,
-    T Function(Map<String, dynamic>) fromJson) {
+    (bool, Map<dynamic, dynamic>) result, String key, T Function(Map<String, dynamic>) fromJson) {
   if (result.$1) {
     // Request success
     final List<T> output = [];

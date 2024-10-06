@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:twixer/Widgets/twixer_loading_indicator.dart';
 
 /// A button that implements a specific loading state.
