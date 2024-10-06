@@ -38,10 +38,8 @@ class _DisplayerState<T> extends State<Displayer> {
     setState(() {
       _loadingData = true;
     });
-    compute((a) async{
-
-    }, (30, _itemCount));
-    widget.get(30, _itemCount).then((value) {
+    compute((a) async {
+      final value = await widget.get(a.$1, a.$2);
       setState(() {
         final res = _handler.handle(value);
         _loadingData = false;
@@ -52,7 +50,8 @@ class _DisplayerState<T> extends State<Displayer> {
           }
         }
       });
-    });
+    }, (30, _itemCount));
+    widget.get(30, _itemCount).then((value) {});
   }
 
   @override
