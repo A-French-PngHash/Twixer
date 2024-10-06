@@ -24,16 +24,14 @@ class _ProfilePictureState extends State<ProfilePicture> {
   void initState() {
     super.initState();
     getProfilePicture(widget.username).then((value) {
-      print("then");
       final result = widget.handler.handle<Image>(value);
-      if (result != null) {
+      if (this.mounted && result != null) {
         setState(() {
           image = result;
           _isLoaded = true;
         });
       }
     });
-    print("after");
   }
 
   @override
