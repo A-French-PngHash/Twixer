@@ -13,7 +13,7 @@ Future<(bool, TweetModel?, String?)> getTweetFromId(int id) async {
     http.get,
     "/tweet",
     {"tweet-id": id.toString()},
-    cacheResponse: true,
+    cacheResponse: false,
   );
   if (result.$1) {
     return (true, TweetModel.fromJson(result.$2["tweet"]), null);
@@ -32,7 +32,7 @@ Future<(bool, List<TweetModel>?, String?)> getTweetOnHomepage(
       "limit": limit.toString(),
       "offset": offset.toString(),
     },
-    cacheResponse: true,
+    cacheResponse: false,
   );
 
   return handleListResponse(result, "tweets", TweetModel.fromJson);
@@ -51,7 +51,7 @@ Future<(bool, List<TweetModel>?, String?)> getTweetSearch(
       "user-limit": "0",
       "user-offset": "0",
     },
-    cacheResponse: true,
+    cacheResponse: false,
   );
   return handleListResponse(result, "tweets", TweetModel.fromJson);
 }
@@ -59,18 +59,18 @@ Future<(bool, List<TweetModel>?, String?)> getTweetSearch(
 Future<(bool, List<ProfileCardModel>?, String?)> getProfileSearch(
     {required int limit, required int offset, required String search_string}) async {
   final result = await requester.requestApi(
-    http.get,
-    "/search",
-    {
-      "search-string": search_string,
-      "order-by": "date", // Value is not used for users.
-      "user-limit": limit.toString(),
-      "user-offset": offset.toString(),
-      "tweet-limit": "0",
-      "tweet-offset": "0",
-    },
-    cacheResponse: true,
-  );
+      http.get,
+      "/search",
+      {
+        "search-string": search_string,
+        "order-by": "date", // Value is not used for users.
+        "user-limit": limit.toString(),
+        "user-offset": offset.toString(),
+        "tweet-limit": "0",
+        "tweet-offset": "0",
+      },
+      cacheResponse: true,
+      expirationDuration: 25);
   return handleListResponse(result, "users", ProfileCardModel.fromJson);
 }
 
@@ -108,7 +108,7 @@ Future<(bool, List<TweetModel>?, String?)> getProfileTweets({
       "offset": offset.toString(),
       "order-by": orderBy,
     },
-    cacheResponse: true,
+    cacheResponse: false,
   );
   return handleListResponse(result, "tweets", TweetModel.fromJson);
 }

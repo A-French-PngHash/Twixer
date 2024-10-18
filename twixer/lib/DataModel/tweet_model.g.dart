@@ -16,6 +16,7 @@ TweetModel _$TweetModelFromJson(Map<String, dynamic> json) => TweetModel(
       (json['post_date'] as num).toInt(),
       (json['replying_to'] as num?)?.toInt(),
       json['username'] as String,
+      (json['is_liked'] as num).toInt(),
     );
 
 Map<String, dynamic> _$TweetModelToJson(TweetModel instance) =>
@@ -29,4 +30,5 @@ Map<String, dynamic> _$TweetModelToJson(TweetModel instance) =>
       'number_of_response': instance.numberOfResponse,
       'post_date': instance.postDate,
       'replying_to': instance.replyingTo,
+      'is_liked': instance.isLiked,
     };

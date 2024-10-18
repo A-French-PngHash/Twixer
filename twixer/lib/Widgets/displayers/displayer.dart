@@ -81,7 +81,7 @@ class _DisplayerState<T> extends State<Displayer> {
                   controller: controller,
                   itemBuilder: (context, index) {
                     return Container(
-                      padding: EdgeInsets.symmetric(vertical: 2),
+                      padding: EdgeInsets.symmetric(vertical: 0),
                       child: widget.buildWidget(_values[index]),
                     );
                   },

@@ -20,9 +20,9 @@ class TextFieldLikeButton extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.all(1),
-              child:
-                  Text(content, style: Theme.of(context).textTheme.labelMedium),
+              child: Text(content, style: Theme.of(context).textTheme.labelMedium),
             ),
+            Text(content == "" ? "Search..." : ""),
             Spacer(),
             Padding(
               padding: EdgeInsets.all(1),
@@ -32,11 +32,11 @@ class TextFieldLikeButton extends StatelessWidget {
         ),
         style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
-              side: BorderSide(
-                  width: 1, color: Color.fromARGB(255, 212, 216, 217)),
+              side: BorderSide(width: 1, color: Color.fromARGB(255, 212, 216, 217)),
               borderRadius: BorderRadius.circular(20),
             ),
             elevation: 0,
+            foregroundColor: Colors.black,
             shadowColor: Colors.transparent,
             backgroundColor: Color.fromARGB(255, 239, 243, 244),
             splashFactory: NoSplash.splashFactory,

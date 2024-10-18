@@ -5,7 +5,7 @@ part 'tweet_model.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class TweetModel {
   TweetModel(this.id, this.content, this.retweetId, this.authorId, this.likeCount, this.numberOfResponse, this.postDate,
-      this.replyingTo, this.authorUsername);
+      this.replyingTo, this.authorUsername, this.isLiked);
 
   int id;
   @JsonKey(name: "author")
@@ -18,6 +18,7 @@ class TweetModel {
   int numberOfResponse;
   int postDate;
   int? replyingTo;
+  int isLiked;
 
   factory TweetModel.fromJson(Map<String, dynamic> json) {
     return _$TweetModelFromJson(json);

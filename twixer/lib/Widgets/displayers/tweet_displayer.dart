@@ -6,8 +6,7 @@ import 'package:twixer/Widgets/displayers/displayer.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 
 class TweetDisplayer extends StatelessWidget {
-  final Future<(bool, List<TweetModel>?, String?)> Function(
-      int limit, int offset) get;
+  final Future<(bool, List<TweetModel>?, String?)> Function(int limit, int offset) get;
   final Connection? connection;
   late final ErrorHandler _handler;
 
@@ -18,7 +17,11 @@ class TweetDisplayer extends StatelessWidget {
     _handler = ErrorHandler(context);
     return Displayer<TweetModel>(
       buildWidget: (dynamic value) {
-        return TweetCard(value, connection, _handler);
+        return TweetCard(
+          value,
+          connection,
+          _handler,
+        );
       },
       get: get,
       showRetry: true,

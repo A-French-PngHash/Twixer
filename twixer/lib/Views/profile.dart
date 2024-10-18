@@ -67,36 +67,33 @@ class _ProfileViewState extends State<ProfileView> {
           height: 220,
           child: buildUpperStack(),
         ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildUserSummary(),
+              Container(
+                child: MiddleNavBar(
+                    labels: ["Latest", "Most liked", "Most commented"],
+                    onSelect: (number) {
+                      setState(() {
+                        orderBy = _orders[number];
+                      });
+                    }),
+                padding: EdgeInsets.only(top: 20, bottom: 8),
+              ),
+            ],
+          ),
+        ),
         Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                buildUserSummary(),
-                Container(
-                  child: MiddleNavBar(
-                      labels: ["Latest", "Most liked", "Most commented"],
-                      onSelect: (number) {
-                        setState(() {
-                          orderBy = _orders[number];
-                        });
-                      }),
-                  padding: EdgeInsets.only(top: 20, bottom: 8),
-                ),
-                Expanded(
-                  child: TweetDisplayer(
-                    get: (limit, offset) async {
-                      return await getProfileTweets(
-                          username: widget.username, orderBy: orderBy, limit: limit, offset: offset);
-                    },
-                    connection: widget.connection,
-                    key: UniqueKey(),
-                  ),
-                ),
-              ],
-            ),
+          child: TweetDisplayer(
+            get: (limit, offset) async {
+              return await getProfileTweets(username: widget.username, orderBy: orderBy, limit: limit, offset: offset);
+            },
+            connection: widget.connection,
+            key: UniqueKey(),
           ),
         ),
       ],

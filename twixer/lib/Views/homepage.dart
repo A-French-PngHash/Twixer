@@ -14,14 +14,11 @@ class Homepage extends StatelessWidget {
     print(Theme.of(context).colorScheme.primary);
     return Scaffold(
       appBar: AppBar(title: Text("Twixer"), scrolledUnderElevation: 0.0),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 5),
-        child: TweetDisplayer(
-          get: (limit, offset) {
-            return getTweetOnHomepage(connection: connection, limit: limit, offset: offset);
-          },
-          connection: connection,
-        ),
+      body: TweetDisplayer(
+        get: (limit, offset) {
+          return getTweetOnHomepage(connection: connection, limit: limit, offset: offset);
+        },
+        connection: connection,
       ),
     );
   }

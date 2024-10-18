@@ -44,11 +44,14 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
+    Widget widget;
     if (search_string == "") {
-      return build_no_search(context);
+      widget = build_no_search(context);
     } else {
-      return build_search(context);
+      widget = build_search(context);
     }
+
+    return Scaffold(appBar: AppBar(title: Text("Twixer"), scrolledUnderElevation: 0.0), body: widget);
   }
 
   Widget build_no_search(BuildContext context) {
@@ -56,33 +59,30 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Widget build_search(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Twixer"), scrolledUnderElevation: 0.0),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFieldLikeButton(search_string, true, searchFieldPressed),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: MiddleNavBar(
-                  labels: ["Populaire", "Récent", "Le plus commenté"],
-                  onSelect: (value) {
-                    setState(() {
-                      _selectedValue = value;
-                      redefineGet();
-                    });
-                  }),
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextFieldLikeButton(search_string, true, searchFieldPressed),
+        Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: MiddleNavBar(
+                labels: ["Populaire", "Récent", "Le plus commenté"],
+                onSelect: (value) {
+                  setState(() {
+                    _selectedValue = value;
+                    redefineGet();
+                  });
+                }),
           ),
-          Divider(),
-          Expanded(
-            child: TweetDisplayer(get: get, connection: widget.connection, key: UniqueKey()),
-          ),
-        ],
-      ),
+        ),
+        Divider(),
+        Expanded(
+          child: TweetDisplayer(get: get, connection: widget.connection, key: UniqueKey()),
+        ),
+      ],
     );
   }
 
