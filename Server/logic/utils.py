@@ -1,8 +1,10 @@
+from db.heart import Heart
 from db.tweet import Tweet
 from db.user import User
 import PIL.Image
 
 from logic.rights import GuestRight, get_rights
+from peewee import Case, fn, JOIN
 
 
 def user_exist(username:str):
@@ -18,9 +20,32 @@ def tweet_select():
 
     WARNING : Already joins the user table.
     """
-    return (Tweet
-            .select(User.username, Tweet.id, Tweet.author, Tweet.replying_to, Tweet.content, Tweet.post_date, Tweet.number_of_response, Tweet.like_count, Tweet.retweet_id,)
-            .join(User))
+    authorId = 1
+    subquery = (Heart 
+    .select(Heart.id)
+    .where(
+        authorId == Heart.author_id
+        
+    )
+    .where(Tweet.id == Heart.tweet_id)
+    )
+
+    returning = (Tweet
+            .select(User.username, 
+                    Tweet.id, 
+                    Tweet.author, 
+                    Tweet.replying_to, 
+                    Tweet.content, 
+                    Tweet.post_date, 
+                    Tweet.number_of_response, 
+                    Tweet.like_count, 
+                    Tweet.retweet_id,
+                    fn.exists(subquery).alias("is_liked")
+                    
+            )
+            .join(User)
+            )
+    return returning
         
 
 

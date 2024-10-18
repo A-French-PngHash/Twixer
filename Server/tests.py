@@ -62,7 +62,6 @@ tweet3 = Tweet.create(author=elouan, content="Maître Renard, par l'odeur alléc
 Tweet.create(author=elouan, content=" Lui tint à peu près ce langage :", post_date=time.time())
 
 for i in range(50):
-    
 	Tweet.create(author=titouan, content=str(i), post_date=time.time())
 actions.follow(token="titouan", user_to_follow_username="tymeo")
 actions.follow(token="titouan", user_to_follow_username="elouan")
