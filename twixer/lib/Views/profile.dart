@@ -209,7 +209,7 @@ class _ProfileViewState extends State<ProfileView> {
       children: [
         Text(
           "@${userModel.username}",
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         Text("🗓️ joined twixer in ${DateFormat("MMMM").format(userModel.joinDate)} ${userModel.joinDate.day}",
             style: Theme.of(context).textTheme.bodyLarge)

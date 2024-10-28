@@ -45,8 +45,7 @@ class _ProfileCardState extends State<ProfileCard> {
                   "@${widget.profileModel.username}",
                   style: Theme.of(context)
                       .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
+                      .headlineSmall,
                 ),
                 Container(
                   width: c_width,

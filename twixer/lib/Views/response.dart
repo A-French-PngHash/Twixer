@@ -31,21 +31,8 @@ class _ResponseState extends State<Response> {
             widget.connection,
             ErrorHandler(context),
             clickable: false,
+            style: TweetDisplayStyle.big,
           ),
-          Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: CustomPaint(
-                    painter: VerticalLinePainter(),
-                  ),
-                )
-              ],
-            ),
-          )
         ],
       ),
     );

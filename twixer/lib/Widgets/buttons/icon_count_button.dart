@@ -5,6 +5,7 @@ class IconCountButton extends StatelessWidget {
   final IconData iconUntoggled;
   final Color? toggledColor;
   final int? count;
+  final double? size;
   final bool isToggled;
   final Function() onPressed;
 
@@ -12,6 +13,7 @@ class IconCountButton extends StatelessWidget {
       {required this.iconToggled,
       required this.iconUntoggled,
       this.count,
+      this.size,
       required this.isToggled,
       required this.onPressed,
       super.key,
@@ -26,10 +28,11 @@ class IconCountButton extends StatelessWidget {
             icon: Icon(
               isToggled ? iconToggled : iconUntoggled,
               color: isToggled ? this.toggledColor : null,
+              size: size,
             ),
             onPressed: onPressed),
         Text(
-          count.toString(),
+          count == null ? "" : count.toString(),
         ),
       ],
     );

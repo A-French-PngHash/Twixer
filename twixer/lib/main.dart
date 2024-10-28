@@ -4,6 +4,7 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/Views/navigation.dart';
 
 void main() {
+  GoogleFonts.config.allowRuntimeFetching = false;
   runApp(const MainApp());
 }
 
@@ -19,11 +20,11 @@ class MainApp extends StatelessWidget {
       theme: ThemeData.light(useMaterial3: true).copyWith(
           textTheme: GoogleFonts.quicksandTextTheme(
             TextTheme().copyWith(
-              bodyLarge: TextStyle(fontSize: 19),
-              labelMedium: TextStyle(
-                color: Color.fromARGB(255, 85, 99, 110),
-              ),
-            ),
+                bodyLarge: TextStyle(fontSize: 19),
+                labelMedium: TextStyle(
+                  color: Color.fromARGB(255, 85, 99, 110),
+                ),
+                headlineSmall: TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
           ).apply(bodyColor: Colors.black, displayColor: Colors.black),
           primaryColor: Color.fromARGB(255, 29, 161, 242),
           focusColor: Color.fromARGB(255, 29, 161, 242),
