@@ -23,7 +23,7 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  int index = 2;
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {

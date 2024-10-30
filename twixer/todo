@@ -1,3 +1,2 @@
-Add isliked field to tweets.
-
-add possibility to force request when reloading the cache is needed, example : liking a tweet and then reloading the cache by making the new request.
+- Make comment count work
+- Option to order responses by popularity date... (default : date)

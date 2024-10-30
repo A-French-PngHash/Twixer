@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:twixer/DataLogic/auth.dart';
+import 'package:twixer/Views/homepage.dart';
 import 'package:twixer/Views/navigation.dart';
+import 'package:twixer/config.dart';
 
 void main() {
   GoogleFonts.config.allowRuntimeFetching = false;
@@ -26,10 +28,10 @@ class MainApp extends StatelessWidget {
                 ),
                 headlineSmall: TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
           ).apply(bodyColor: Colors.black, displayColor: Colors.black),
-          primaryColor: Color.fromARGB(255, 29, 161, 242),
-          focusColor: Color.fromARGB(255, 29, 161, 242),
+          primaryColor: BLUE,
+          focusColor: BLUE,
           scaffoldBackgroundColor: Colors.white,
-          colorScheme: ColorScheme.light(primary: Color.fromARGB(255, 29, 161, 242))),
+          colorScheme: ColorScheme.light(primary: BLUE)),
     );
   }
 }

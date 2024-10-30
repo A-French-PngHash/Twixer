@@ -87,7 +87,6 @@ class _SearchViewState extends State<SearchView> {
   }
 
   void searchFieldPressed() {
-    print("transition");
     Navigator.of(context)
         .push(FadingPageRoute(SearchingView(
       initialSearch: search_string,

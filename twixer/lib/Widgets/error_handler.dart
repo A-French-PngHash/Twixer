@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Api call responses are intended to pass through an instance of this class which
 /// will take appropriate action if an error occured.
-/// If the call was succesfull, returns the content of the response, otherwise displays
+///
+/// If the call was succesful, returns the content of the response, otherwise displays
 /// an error message to the user through a snackbar.
 class ErrorHandler {
   BuildContext context;
