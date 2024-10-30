@@ -112,3 +112,18 @@ Future<(bool, List<TweetModel>?, String?)> getProfileTweets({
   );
   return handleListResponse(result, "tweets", TweetModel.fromJson);
 }
+
+Future<(bool, List<TweetModel>?, String?)> getResponseTweet(int tweetId, int limit, int offset, String orderBy) async {
+  final result = await requester.requestApi(
+    http.get,
+    "/response",
+    {
+      "tweet-id": tweetId.toString(),
+      "limit": limit.toString(),
+      "offset": offset.toString(),
+      "order-by": orderBy,
+    },
+    cacheResponse: true,
+  );
+  return handleListResponse(result, "tweets", TweetModel.fromJson);
+}

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/auth.dart';
+import 'package:twixer/DataLogic/browsing.dart';
 import 'package:twixer/DataModel/tweet_model.dart';
 import 'package:twixer/Widgets/cards/tweet_card.dart';
+import 'package:twixer/Widgets/displayers/tweet_displayer.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 import 'package:twixer/Widgets/painters/vertical_line_painter.dart';
 
@@ -16,6 +18,8 @@ class Response extends StatefulWidget {
 }
 
 class _ResponseState extends State<Response> {
+  String orderBy = "date";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +36,15 @@ class _ResponseState extends State<Response> {
             ErrorHandler(context),
             clickable: false,
             style: TweetDisplayStyle.big,
+          ),
+          Expanded(
+            child: TweetDisplayer(
+              get: (limit, offset) async {
+                return await getResponseTweet(widget.initialTweet.id, limit, offset, orderBy);
+              },
+              connection: widget.connection,
+              key: UniqueKey(),
+            ),
           ),
         ],
       ),

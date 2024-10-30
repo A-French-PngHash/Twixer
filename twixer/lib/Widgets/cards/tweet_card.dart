@@ -67,39 +67,37 @@ class TweetState extends State<TweetCard> {
           : null,
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 10, top: 10),
-                child: ProfilePicture(
-                  username: tweetModel.authorUsername,
-                  handler: ErrorHandler(context),
-                  size: 40,
-                ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(right: 10, top: 10),
+              child: ProfilePicture(
+                username: tweetModel.authorUsername,
+                handler: ErrorHandler(context),
+                size: 40,
               ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "@${tweetModel.authorUsername}",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    Text(
-                      tweetModel.content,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    DateDisplay(tweetModel.postDate),
-                    widget.style == TweetDisplayStyle.classic ? buildClassicIconRow() : buildBigIconRow()
-                  ],
-                ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "@${tweetModel.authorUsername}",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  Text(
+                    tweetModel.content,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  DateDisplay(tweetModel.postDate),
+                  widget.style == TweetDisplayStyle.classic ? buildClassicIconRow() : buildBigIconRow()
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
