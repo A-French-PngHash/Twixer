@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/Views/homepage.dart';
 import 'package:twixer/Views/navigation.dart';
 import 'package:twixer/config.dart';
 
 void main() {
-  GoogleFonts.config.allowRuntimeFetching = false;
   runApp(const MainApp());
 }
 
@@ -19,15 +17,14 @@ class MainApp extends StatelessWidget {
       home: Navigation(
         connection: Connection("titouan", false, username: "titouan"),
       ),
-      theme: ThemeData.light(useMaterial3: true).copyWith(
-          textTheme: GoogleFonts.quicksandTextTheme(
-            TextTheme().copyWith(
-                bodyLarge: TextStyle(fontSize: 19),
-                labelMedium: TextStyle(
-                  color: Color.fromARGB(255, 85, 99, 110),
-                ),
-                headlineSmall: TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
-          ).apply(bodyColor: Colors.black, displayColor: Colors.black),
+      theme: ThemeData(fontFamily: "Quicksand", brightness: Brightness.light, useMaterial3: true).copyWith(
+          textTheme: TextTheme(
+            bodyLarge: TextStyle(fontSize: 19),
+            labelMedium: TextStyle(
+              color: Color.fromARGB(255, 85, 99, 110),
+            ),
+            headlineSmall: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+          ).apply(bodyColor: Colors.black, displayColor: Colors.black, fontFamily: "Quicksand"),
           primaryColor: BLUE,
           focusColor: BLUE,
           scaffoldBackgroundColor: Colors.white,

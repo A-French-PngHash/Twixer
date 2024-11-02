@@ -110,7 +110,7 @@ Parameters in headers:
 
 {"tweets" : []}
 
-### GET /tweet
+### GET /tweet
 Gets the requested tweet.
 
 Parameters in headers:
@@ -118,7 +118,7 @@ Parameters in headers:
 
 {"tweet" : {}}
 
-## Profile Browsing And Updating
+## Profile Browsing And Updating
 
 ### GET /profile
 Return data on the given user as well as tweets ordered by date (most recent first)

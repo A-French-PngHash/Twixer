@@ -3,9 +3,11 @@ import 'package:twixer/DataLogic/actions.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/browsing.dart';
 import 'package:twixer/Views/response.dart';
+import 'package:twixer/Views/write_tweet.dart';
 import 'package:twixer/Widgets/date_display.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 import 'package:twixer/Widgets/profile_picture.dart';
+import 'package:twixer/Widgets/route/coming_from_bottom_route.dart';
 import 'package:twixer/config.dart';
 import '../../DataModel/tweet_model.dart';
 import '../buttons/icon_count_button.dart';
@@ -47,6 +49,7 @@ class TweetState extends State<TweetCard> {
 
   @override
   Widget build(BuildContext context) {
+    print(this.tweetModel.postDate);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
           shadowColor: Colors.transparent,
@@ -77,6 +80,7 @@ class TweetState extends State<TweetCard> {
                 username: tweetModel.authorUsername,
                 handler: ErrorHandler(context),
                 size: 40,
+                connection: this.widget.connection!,
               ),
             ),
             Expanded(
@@ -185,7 +189,7 @@ class TweetState extends State<TweetCard> {
             isToggled: true,
             size: size,
             onPressed: () {
-              postAnswerButtonPressed();
+              postAnswerButtonPressed(context);
             }),
       ),
       IconCountButton(
@@ -214,7 +218,10 @@ class TweetState extends State<TweetCard> {
     // SHOW RETWEET SCREEN
   }
 
-  void postAnswerButtonPressed() {
-    // POSTER LA REPONSE DE LUTILISATEUR
+  void postAnswerButtonPressed(BuildContext context) {
+    Navigator.of(context).push(ComingFromBottomRoute(WriteTweet(
+      connection: widget.connection!,
+      respondingTo: this.tweetModel,
+    )));
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/profile_picture.dart';
+import 'package:twixer/Views/profile.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 
 /// Automatically fetches the profile picture for the given user.
@@ -7,8 +9,15 @@ class ProfilePicture extends StatefulWidget {
   final String username;
   final ErrorHandler handler;
   final double size;
+  final Connection connection;
+  final bool clickable;
 
-  ProfilePicture({required this.username, required this.handler, this.size = 60});
+  ProfilePicture(
+      {required this.username,
+      required this.handler,
+      this.size = 60,
+      required Connection this.connection,
+      this.clickable = true});
 
   @override
   State<StatefulWidget> createState() {
@@ -41,16 +50,36 @@ class _ProfilePictureState extends State<ProfilePicture> {
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(child: child, opacity: animation);
       },
-      child: Container(
-        key: UniqueKey(),
-        height: widget.size,
-        width: widget.size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-          image: DecorationImage(
-            image: _isLoaded ? image!.image : AssetImage("assets/default.jpg"),
-            fit: BoxFit.fill,
+      child: ElevatedButton(
+        onPressed: this.widget.clickable
+            ? () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfileView(
+                      username: this.widget.username,
+                      errorHandler: ErrorHandler(context),
+                      connection: this.widget.connection,
+                      provideReturnArrow: true,
+                    ),
+                  ),
+                );
+              }
+            : null,
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size.zero,
+          padding: EdgeInsets.zero,
+        ),
+        child: Container(
+          key: UniqueKey(),
+          height: widget.size,
+          width: widget.size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            image: DecorationImage(
+              image: _isLoaded ? image!.image : AssetImage("assets/default.jpg"),
+              fit: BoxFit.fill,
+            ),
           ),
         ),
       ),

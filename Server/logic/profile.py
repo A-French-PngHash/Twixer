@@ -17,11 +17,10 @@ def update_profile(token : str, fields : dict, rights = None):
     if rights is GuestRight:
         return "You need to be logged in to update your profile", 401
     keys = list(map(lambda x : x.lower(), fields.keys()))
-    print(keys)
+
     if "birth-date" in keys:
         rights.associated_user.join_date = datetime.datetime.fromisoformat(fields["birth_date"])
     if "description" in keys:
-        print("modifying")
         rights.associated_user.description = fields["description"]
     rights.associated_user.save()
     return "", 200

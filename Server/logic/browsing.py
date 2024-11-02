@@ -144,7 +144,6 @@ def get_homepage_tweets(token:str, limit : int, offset : int, rights = None):
 
             .dicts()
             )
-    print(feed)
     return list(feed), 200
 
 def get_tweet_by_id(tweet_id : int):

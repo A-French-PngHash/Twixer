@@ -11,13 +11,13 @@ from logic.utils import need_login
 
 
 def new_reply_to(tweet):
-    tweet.numberOfResponse += 1
+    tweet.number_of_response += 1
     tweet.save()
     if tweet.replying_to:
         new_reply_to(tweet.replying_to)
 
 def reply_deleted_to(tweet):
-    tweet.numberOfResponse -= 1
+    tweet.number_of_response -= 1
     tweet.save()
     if tweet.replying_to:
         reply_deleted_to(tweet.replying_to)
@@ -45,6 +45,7 @@ def tweet(token : str, content : str, replies_to : int = None, rights = None) ->
             return 400, "The tweet you are trying to reply to does not exist."
         tweet = tweets[0]
         new_reply_to(tweet)
+    print(time.time())
     Tweet.create(author=rights.associated_user,replying_to = tweet, content=content, post_date=time.time())
     return 200, ""
 
@@ -85,8 +86,6 @@ def like(token:str, tweet_id : int, rights = None):
     hearts = (Heart
         .select()
         .where((Heart.tweet == tweet[0]) & (Heart.author_id == rights.associated_user.id)))
-    print("hey")
-    print(hearts)
     if len(hearts) == 0:
         Heart.create(tweet=tweet[0], date=time.time(), author=rights.associated_user)
         return {"like_status" : 1}, 200

@@ -3,6 +3,7 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/Views/write_tweet.dart';
 import 'package:twixer/Widgets/buttons/new_tweet_button.dart';
 import 'package:twixer/Widgets/displayers/tweet_displayer.dart';
+import 'package:twixer/Widgets/route/coming_from_bottom_route.dart';
 import '../DataLogic/browsing.dart';
 
 class Homepage extends StatelessWidget {
@@ -28,7 +29,19 @@ class Homepage extends StatelessWidget {
           ),
           Positioned(
             child: NewTweetButton(onPressed: () {
-              Navigator.of(context).push(PageRouteBuilder(
+              Navigator.of(context).push(ComingFromBottomRoute(WriteTweet(connection: this.connection)));
+            }),
+            bottom: 20,
+            right: 20,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/*
+PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) {
                     return WriteTweet(
                       connection: this.connection,
@@ -44,13 +57,4 @@ class Homepage extends StatelessWidget {
                       child: child,
                     );
                   },
-                  transitionDuration: Duration(milliseconds: 200)));
-            }),
-            bottom: 20,
-            right: 20,
-          ),
-        ],
-      ),
-    );
-  }
-}
+                  transitionDuration: Duration(milliseconds: 200))*/

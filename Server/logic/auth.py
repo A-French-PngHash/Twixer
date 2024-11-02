@@ -24,7 +24,6 @@ def get_token(username : str, hashe : str):
      - the token if the login is sucessful.
     """
     hexdigest = hashlib.md5(f"{username}:{hashe}".encode("utf-8")).hexdigest()
-    print(hexdigest)
     users = (User
         .select()
         .where(

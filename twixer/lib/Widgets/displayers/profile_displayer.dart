@@ -6,8 +6,7 @@ import 'package:twixer/Widgets/displayers/displayer.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 
 class ProfileDisplayer extends StatelessWidget {
-  final Future<(bool, List<ProfileCardModel>?, String?)> Function(
-      int limit, int offset) get;
+  final Future<(bool, List<ProfileCardModel>?, String?)> Function(int limit, int offset) get;
   final Connection? connection;
   late final ErrorHandler _handler;
 
@@ -18,10 +17,7 @@ class ProfileDisplayer extends StatelessWidget {
     _handler = ErrorHandler(context);
     return Displayer<ProfileCardModel>(
       buildWidget: (dynamic value) {
-        return ProfileCard(
-          value,
-          _handler,
-        );
+        return ProfileCard(value, _handler, this.connection!);
       },
       get: get,
       showRetry: false,

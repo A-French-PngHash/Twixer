@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataModel/profile_card_model.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 import 'package:twixer/Widgets/profile_picture.dart';
@@ -7,8 +8,9 @@ import 'package:twixer/Widgets/profile_picture.dart';
 class ProfileCard extends StatefulWidget {
   final ProfileCardModel profileModel;
   final ErrorHandler handler;
+  final Connection connection;
 
-  ProfileCard(this.profileModel, this.handler);
+  ProfileCard(this.profileModel, this.handler, this.connection);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,8 +22,6 @@ class _ProfileCardState extends State<ProfileCard> {
   @override
   Widget build(BuildContext context) {
     double c_width = MediaQuery.of(context).size.width * 0.8;
-
-    print(widget.profileModel.description);
     return Container(
       padding: EdgeInsets.all(10),
       child: Row(
@@ -35,27 +35,23 @@ class _ProfileCardState extends State<ProfileCard> {
             child: ProfilePicture(
               username: widget.profileModel.username,
               handler: widget.handler,
+              connection: this.widget.connection,
             ),
           ),
-          Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "@${widget.profileModel.username}",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall,
-                ),
-                Container(
-                  width: c_width,
-                  child: Text(
-                    widget.profileModel.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ]),
+          Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              "@${widget.profileModel.username}",
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Container(
+              width: c_width,
+              child: Text(
+                widget.profileModel.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ]),
         ],
       ),
     );

@@ -14,7 +14,6 @@ from logic.profile import get_profile_picture_path, update_profile, update_profi
 def update_profile_route(output):
     change = request.headers
     result1, code1 = update_profile(output[0], change)
-    print(request.files)
     if "profile-picture" in request.files:
         file = request.files["profile-picture"]
         result2, code2 = update_profile_picture(output[0], file)

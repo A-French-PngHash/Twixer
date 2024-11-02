@@ -15,7 +15,16 @@ class ProfileView extends StatefulWidget {
   final ErrorHandler errorHandler;
   final Connection connection;
 
-  ProfileView({required this.username, required this.errorHandler, required this.connection});
+  /// Displays a return arrow in the top left corner if this is set to true.
+  ///
+  /// The profile page can be accessed from the home screen using the bottom
+  /// navigation bar in which case such an arrow is unwanted. It can also be
+  /// accessed through common navigation (clicking on a profile image, on a
+  /// @username...), in that situation we want the arrow to be displayed.
+  final bool provideReturnArrow;
+
+  ProfileView(
+      {required this.username, required this.errorHandler, required this.connection, this.provideReturnArrow = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -66,7 +75,7 @@ class _ProfileViewState extends State<ProfileView> {
       children: [
         Container(
           height: 220,
-          child: buildUpperStack(),
+          child: buildUpperStack(context),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -132,71 +141,93 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget buildUpperStack() {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
-          child: Container(
-            height: 150,
-            width: double.infinity,
-            decoration:
-                BoxDecoration(color: Colors.blue, border: Border(bottom: BorderSide(color: Colors.white, width: 0))),
-          ),
+  Widget buildUpperStack(BuildContext context) {
+    final children = [
+      Positioned(
+        child: Container(
+          height: 150,
+          width: double.infinity,
+          decoration:
+              BoxDecoration(color: Colors.blue, border: Border(bottom: BorderSide(color: Colors.white, width: 0))),
         ),
-        Positioned(
-          child: Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 0),
-                ),
-              ),
-              Container(
-                child: ProfilePicture(
-                  username: "titouan",
-                  handler: ErrorHandler(context),
-                  size: 90,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 0),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ],
-          ),
-          top: 110,
-          left: 30,
-        ),
-        Positioned(
-          child: TextButton(
-            onPressed: () {
-              // TODO : Edit profile
-              print("edit profile");
-            },
-            child: Container(
-              child: Container(
-                padding: EdgeInsets.all(3),
-                child: Text(
-                  "Editer le profil",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w900),
-                ),
-              ),
+      ),
+      Positioned(
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Container(
+              height: 100,
+              width: 100,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(color: Color.fromARGB(255, 85, 99, 110)),
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 0),
               ),
             ),
-          ),
-          right: 30,
-          top: 170,
+            Container(
+              child: ProfilePicture(
+                username: this.widget.username,
+                handler: ErrorHandler(context),
+                connection: this.widget.connection,
+                size: 90,
+                clickable: false,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: 0),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ],
         ),
-      ],
+        top: 110,
+        left: 30,
+      ),
+      Positioned(
+        child: TextButton(
+          onPressed: () {
+            // TODO : Edit profile
+            print("edit profile");
+          },
+          child: Container(
+            child: Container(
+              padding: EdgeInsets.all(3),
+              child: Text(
+                "Editer le profil",
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w900),
+              ),
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(color: Color.fromARGB(255, 85, 99, 110)),
+            ),
+          ),
+        ),
+        right: 30,
+        top: 170,
+      ),
+    ];
+    if (this.widget.provideReturnArrow) {
+      children.add(
+        Positioned(
+          top: 10,
+          left: 10,
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            style: IconButton.styleFrom(
+                backgroundColor: Colors.black.withOpacity(0.4), minimumSize: Size.zero, padding: EdgeInsets.all(4)),
+          ),
+        ),
+      );
+    }
+    return Stack(
+      clipBehavior: Clip.none,
+      children: children,
     );
   }
 

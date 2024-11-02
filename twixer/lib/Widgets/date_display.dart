@@ -8,7 +8,7 @@ class DateDisplay extends StatelessWidget {
   late final DateTime postDate;
 
   DateDisplay(this.timestamp) {
-    postDate = DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
+    postDate = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
   }
 
   @override
