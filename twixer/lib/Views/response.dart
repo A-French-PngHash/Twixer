@@ -5,7 +5,6 @@ import 'package:twixer/DataModel/tweet_model.dart';
 import 'package:twixer/Widgets/cards/tweet_card.dart';
 import 'package:twixer/Widgets/displayers/tweet_displayer.dart';
 import 'package:twixer/Widgets/error_handler.dart';
-import 'package:twixer/Widgets/painters/vertical_line_painter.dart';
 
 class Response extends StatefulWidget {
   final TweetModel initialTweet;

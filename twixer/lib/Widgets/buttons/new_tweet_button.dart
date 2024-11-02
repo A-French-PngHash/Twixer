@@ -1,7 +1,5 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:twixer/Views/write_tweet.dart';
 import 'package:twixer/config.dart';
 
 /// A round button with a plus inside.

@@ -1,3 +1,4 @@
 - Option to order responses by popularity date... (default : date)
 - Edit profile button
 - Retweet button
+- Store token on first connection and reconnect login flow to the app.

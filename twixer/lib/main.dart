@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/auth.dart';
-import 'package:twixer/Views/homepage.dart';
 import 'package:twixer/Views/navigation.dart';
 import 'package:twixer/config.dart';
 

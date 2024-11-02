@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/actions.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataModel/tweet_model.dart';
-import 'package:twixer/DataModel/user_model.dart';
 import 'package:twixer/Views/profile.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 import 'package:twixer/Widgets/profile_picture.dart';

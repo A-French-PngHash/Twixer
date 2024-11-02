@@ -4,7 +4,6 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/browsing.dart';
 import 'package:twixer/DataModel/user_model.dart';
 import 'package:twixer/Widgets/buttons/button_with_loading.dart';
-import 'package:twixer/Widgets/buttons/new_tweet_button.dart';
 import 'package:twixer/Widgets/displayers/tweet_displayer.dart';
 import 'package:twixer/Widgets/error_handler.dart';
 import 'package:twixer/Widgets/middle_nav_bar/middle_nav_bar.dart';
