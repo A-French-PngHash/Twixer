@@ -7,19 +7,16 @@ final requester = RequesterWithCacheInterceptor();
 
 Future<(bool, List<SearchModel>?, String?)> getRecentSearch(Connection connection) async {
   final result =
-      await requester.requestApi(http.get, "/search/history", {"token": connection.token}, cacheResponse: false);
-  print(result.$2);
+      await requester.request(http.get, "/search/history", {"token": connection.token}, cacheResponse: false);
 
   return handleListResponse(result, "searches", SearchModel.fromJson);
 }
 
 Future<(bool, void, String?)> postSearch(Connection connection, String content) async {
-  final result =
-      await requester.requestApi(http.post, "/search/history", {"token": connection.token, "content": content});
+  final result = await requester.request(http.post, "/search/history", {"token": connection.token, "content": content});
   if (result.$1) {
     return (true, null, null);
   } else {
-    print(result.$2["error"] as String);
     return (false, null, result.$2["error"] as String);
   }
 }

@@ -4,9 +4,9 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/browsing.dart';
 import 'package:twixer/Views/response.dart';
 import 'package:twixer/Views/write_tweet.dart';
-import 'package:twixer/Widgets/date_display.dart';
-import 'package:twixer/Widgets/error_handler.dart';
-import 'package:twixer/Widgets/profile_picture.dart';
+import 'package:twixer/Widgets/other/date_display.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
+import 'package:twixer/Widgets/other/profile_picture.dart';
 import 'package:twixer/Widgets/route/coming_from_bottom_route.dart';
 import 'package:twixer/config.dart';
 import '../../DataModel/tweet_model.dart';
@@ -15,7 +15,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum TweetDisplayStyle {
   classic,
-  big // Used when showing responses to a tweet. The big style is set for the main tweet.
+  big, // Used when showing responses to a tweet. The big style is set for the main tweet.
+  retweetPreview,
 }
 
 class TweetCard extends StatefulWidget {
@@ -44,22 +45,38 @@ class TweetCard extends StatefulWidget {
 
 class TweetState extends State<TweetCard> {
   TweetModel tweetModel;
+  TweetModel? retweetModel;
 
-  TweetState(this.tweetModel);
+  TweetState(this.tweetModel) {}
+
+  @override
+  void initState() {
+    super.initState();
+    if (this.tweetModel.retweetId != null) {
+      getTweetFromId(tweetModel.retweetId!, connection: widget.connection).then((result) {
+        setState(() {
+          retweetModel = this.widget._handler.handle(result);
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(this.tweetModel.postDate);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          shadowColor: Colors.transparent,
-          splashFactory: NoSplash.splashFactory,
-          overlayColor: Colors.grey,
-          foregroundColor: Colors.black,
-          disabledBackgroundColor: Colors.transparent,
-          disabledForegroundColor: Colors.black,
-          disabledIconColor: Colors.black,
-          shape: RoundedRectangleBorder()),
+        shadowColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: Colors.grey,
+        foregroundColor: Colors.black,
+        disabledBackgroundColor: Colors.transparent,
+        disabledForegroundColor: Colors.black,
+        disabledIconColor: Colors.black,
+        shape: widget.style == TweetDisplayStyle.retweetPreview
+            ? RoundedRectangleBorder(
+                side: BorderSide(width: 0.4, color: Colors.grey), borderRadius: BorderRadius.circular(15))
+            : RoundedRectangleBorder(),
+      ),
       onPressed: widget.clickable
           ? () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -79,27 +96,16 @@ class TweetState extends State<TweetCard> {
               child: ProfilePicture(
                 username: tweetModel.authorUsername,
                 handler: ErrorHandler(context),
-                size: 40,
+                size: this.widget.style == TweetDisplayStyle.retweetPreview ? 26 : 40,
                 connection: this.widget.connection!,
+                clickable: this.widget.clickable,
               ),
             ),
             Expanded(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "@${tweetModel.authorUsername}",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  Text(
-                    tweetModel.content,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  DateDisplay(tweetModel.postDate),
-                  widget.style == TweetDisplayStyle.classic ? buildClassicIconRow() : buildBigIconRow()
-                ],
-              ),
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: buildMainColumnChildren()),
             ),
           ],
         ),
@@ -107,9 +113,50 @@ class TweetState extends State<TweetCard> {
     );
   }
 
+  List<Widget> buildMainColumnChildren() {
+    final List<Widget> children = [
+      Container(
+        height: widget.style == TweetDisplayStyle.retweetPreview ? 8 : 0,
+      ),
+      Text(
+        "@${tweetModel.authorUsername}",
+        style: Theme.of(context)
+            .textTheme
+            .headlineSmall!
+            .copyWith(fontSize: widget.style == TweetDisplayStyle.retweetPreview ? 17 : null),
+      ),
+      Text(
+        tweetModel.content,
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge!
+            .copyWith(fontSize: widget.style == TweetDisplayStyle.retweetPreview ? 15 : null),
+      ),
+    ];
+    if (widget.style != TweetDisplayStyle.retweetPreview) {
+      if (this.retweetModel != null) {
+        children.add(TweetCard(
+          this.retweetModel!,
+          this.widget.connection,
+          this.widget._handler,
+          style: TweetDisplayStyle.retweetPreview,
+        ));
+      }
+      children.add(DateDisplay(tweetModel.postDate));
+    }
+    if (widget.style == TweetDisplayStyle.classic) {
+      children.add(buildClassicIconRow());
+    }
+    if (widget.style == TweetDisplayStyle.big) {
+      children.add(buildBigIconRow());
+    }
+
+    return children;
+  }
+
   void rebuildTweet() async {
-    final result =
-        widget._handler.handle(await getTweetFromId(tweetModel.id)); // Fetching the tweet data from the server.
+    final result = widget._handler.handle(await getTweetFromId(tweetModel.id,
+        connection: this.widget.connection)); // Fetching the tweet data from the server.
     if (result != null) {
       setState(() {
         // Updating tweet data on the interface.
@@ -169,13 +216,13 @@ class TweetState extends State<TweetCard> {
   }
 
   List<Widget> getIconList({required bool showCount, double? size}) {
-    return [
+    final iconList = [
       IconCountButton(
           iconToggled: Icons.favorite,
           iconUntoggled: Icons.favorite_border,
           toggledColor: Colors.red,
           count: showCount ? tweetModel.likeCount : null,
-          isToggled: tweetModel.isLiked == 1,
+          isToggled: (tweetModel.isLiked != null && tweetModel.isLiked == 1),
           size: size,
           onPressed: () {
             likeButtonPressed();
@@ -192,16 +239,21 @@ class TweetState extends State<TweetCard> {
               postAnswerButtonPressed(context);
             }),
       ),
-      IconCountButton(
+    ];
+    if (this.tweetModel.authorId != this.widget.connection!.user_id) {
+      iconList.add(IconCountButton(
           iconToggled: FontAwesomeIcons.retweet,
           iconUntoggled: FontAwesomeIcons.retweet,
           count: null,
-          isToggled: false,
+          toggledColor: Color.fromARGB(255, 112, 230, 118),
+          isToggled: (tweetModel.isRetweeted != null && tweetModel.isRetweeted == 1),
           size: size,
           onPressed: () {
-            retweetButtonPressed();
-          })
-    ];
+            retweetButtonPressed(context);
+          }));
+    }
+
+    return iconList;
   }
 
   void likeButtonPressed() {
@@ -211,17 +263,21 @@ class TweetState extends State<TweetCard> {
       // Like succeeded, we can update the tweet.
       rebuildTweet();
     });
-    print("Like");
   }
 
-  void retweetButtonPressed() {
-    // SHOW RETWEET SCREEN
+  void retweetButtonPressed(BuildContext context) {
+    Navigator.of(context).push(ComingFromBottomRoute(WriteTweet(
+      connection: widget.connection!,
+      retweeting: this.tweetModel,
+      initialContext: context,
+    )));
   }
 
   void postAnswerButtonPressed(BuildContext context) {
     Navigator.of(context).push(ComingFromBottomRoute(WriteTweet(
       connection: widget.connection!,
       respondingTo: this.tweetModel,
+      initialContext: context,
     )));
   }
 }

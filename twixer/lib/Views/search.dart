@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/browsing.dart';
+import 'package:twixer/DataModel/enums/order_by.dart';
 import 'package:twixer/DataModel/tweet_model.dart';
 import 'package:twixer/Views/searching.dart';
 import 'package:twixer/Widgets/buttons/text_field_like_button.dart';
@@ -10,9 +11,6 @@ import 'package:twixer/Widgets/route/fadin_page_route.dart';
 
 class SearchView extends StatefulWidget {
   final Connection connection;
-
-  final labels = ["Populaire", "Récent", "Le plus commenté"];
-  final orders = ["popularity", "date", "number_of_response"];
 
   SearchView({required this.connection});
 
@@ -24,7 +22,7 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   String search_string;
-  int _selectedValue = 0;
+  OrderBy selectedOrder = OrderBy.date;
   late Future<(bool, List<TweetModel>?, String?)> Function(int, int) get;
 
   _SearchViewState(this.search_string) {
@@ -34,11 +32,11 @@ class _SearchViewState extends State<SearchView> {
   void redefineGet() {
     get = (limit, offset) async {
       return await getTweetSearch(
-        limit: limit,
-        offset: offset,
-        search_string: search_string,
-        order_by: widget.orders[_selectedValue],
-      );
+          limit: limit,
+          offset: offset,
+          search_string: search_string,
+          order_by: selectedOrder,
+          connection: this.widget.connection);
     };
   }
 
@@ -69,10 +67,10 @@ class _SearchViewState extends State<SearchView> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: MiddleNavBar(
-                labels: ["Populaire", "Récent", "Le plus commenté"],
+                labels: OrderBy.values.map((t) => t.screenDisplay).toList(),
                 onSelect: (value) {
                   setState(() {
-                    _selectedValue = value;
+                    this.selectedOrder = OrderBy.values[value];
                     redefineGet();
                   });
                 }),

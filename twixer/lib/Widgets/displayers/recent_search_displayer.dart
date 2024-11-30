@@ -3,7 +3,7 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/search.dart';
 import 'package:twixer/DataModel/search_model.dart';
 import 'package:twixer/Widgets/cards/recent_search_card.dart';
-import 'package:twixer/Widgets/error_handler.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
 
 class RecentSearchDisplayer extends StatefulWidget {
   final Connection connection;
@@ -37,7 +37,6 @@ class _RecentSearchDisplayerState extends State<RecentSearchDisplayer> {
       if (res != null) {
         setState(() {
           searches = res;
-          print("loaded");
         });
       }
     });
@@ -50,7 +49,7 @@ class _RecentSearchDisplayerState extends State<RecentSearchDisplayer> {
     for (var element in searches) {
       widgetList.add(
         Container(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.symmetric(horizontal: 10),
           child: RecentSearchCard(
             searchModel: element,
             onPressed: () {

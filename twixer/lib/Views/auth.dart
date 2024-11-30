@@ -36,7 +36,7 @@ class _AuthViewState extends State<AuthView> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => Navigation(
-                            connection: Connection("guest", true),
+                            connection: Connection("guest", true, -1),
                           )));
               print("GUEST");
               print("WARNING : NOT IMPLEMENTED FULLY");

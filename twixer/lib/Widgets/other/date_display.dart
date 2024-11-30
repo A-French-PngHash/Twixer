@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Displays the given date as a single text line.
 class DateDisplay extends StatelessWidget {
   /// Microseconds since epoch.
   final int timestamp;
@@ -17,7 +18,7 @@ class DateDisplay extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "${postDate.hour}:${postDate.minute} · ${DateFormat("MMMM").format(postDate)} ${postDate.day}, ${postDate.year}",
+          "${DateFormat("hh:mm").format(postDate)} · ${DateFormat("MMMM").format(postDate)} ${postDate.day}, ${postDate.year}",
           style: Theme.of(context).textTheme.labelMedium,
         )
       ],

@@ -1,4 +1,7 @@
-- Option to order responses by popularity date... (default : date)
-- Edit profile button
-- Retweet button
+- Option to order responses by popularity date... (default : date).
 - Store token on first connection and reconnect login flow to the app.
+- Write some documentation (write a readme).
+- Better profile page (more data displayed and scrollable)
+- reload by scrolling down
+
+- better fetching of profile picture : create a class where you can easily send request to get a profile picture and that prevents multiple request to the same profile picture to be sent at the same time.

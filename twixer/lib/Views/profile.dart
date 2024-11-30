@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/browsing.dart';
+import 'package:twixer/DataModel/enums/order_by.dart';
 import 'package:twixer/DataModel/user_model.dart';
+import 'package:twixer/Views/edit_profile.dart';
 import 'package:twixer/Widgets/buttons/button_with_loading.dart';
 import 'package:twixer/Widgets/displayers/tweet_displayer.dart';
-import 'package:twixer/Widgets/error_handler.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
 import 'package:twixer/Widgets/middle_nav_bar/middle_nav_bar.dart';
-import 'package:twixer/Widgets/profile_picture.dart';
+import 'package:twixer/Widgets/other/profile_color_panel.dart';
+import 'package:twixer/Widgets/other/profile_picture.dart';
+import 'package:twixer/config.dart';
 
 class ProfileView extends StatefulWidget {
   final String username;
   final ErrorHandler errorHandler;
   final Connection connection;
+  final bool addScaffold;
 
   /// Displays a return arrow in the top left corner if this is set to true.
   ///
@@ -22,8 +27,15 @@ class ProfileView extends StatefulWidget {
   /// @username...), in that situation we want the arrow to be displayed.
   final bool provideReturnArrow;
 
+  final bool showFollowButton;
+
   ProfileView(
-      {required this.username, required this.errorHandler, required this.connection, this.provideReturnArrow = false});
+      {required this.username,
+      required this.errorHandler,
+      required this.connection,
+      this.provideReturnArrow = false,
+      this.showFollowButton = false,
+      this.addScaffold = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -34,9 +46,11 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   bool _loading = true;
   bool success = false;
-  UserModel userModel = UserModel(0, 0, "Loading...", "Loading...", DateTime.now(), DateTime.now());
-  String orderBy = "date";
-  final _orders = ["date", "popularity", "number_of_response"];
+
+  /// WARNING : The userModel takes some time to load (a request is sent to the API).
+  UserModel userModel = UserModel(
+      0, 0, "Loading...", "Loading...", DateTime.now(), DateTime.now(), "loading", BLUE.value.toRadixString(16));
+  OrderBy orderBy = OrderBy.date;
 
   @override
   void initState() {
@@ -45,8 +59,9 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void loadData() {
-    getProfileDataFor(username: widget.username).then((result) async {
+    getProfileDataFor(username: widget.username, connection: widget.connection).then((result) async {
       final userModel = widget.errorHandler.handle(result);
+      print(userModel!.toJson());
       setState(() {
         _loading = false;
         if (userModel == null) {
@@ -68,13 +83,33 @@ class _ProfileViewState extends State<ProfileView> {
     }
     // do something with silver view
 
-    return Column(
+    final colum = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           height: 220,
-          child: buildUpperStack(context),
+          child: ProfileColorPanel(
+            key: UniqueKey(),
+            userModel: this.userModel,
+            showReturnArrow: this.widget.provideReturnArrow,
+            showEditButtons: false,
+            showEditProfileButton: (this.widget.connection.username == this.widget.username),
+            username: this.widget.username,
+            errorHandler: this.widget.errorHandler,
+            connection: this.widget.connection,
+            editProfilePressed: (this._loading || !success)
+                ? null
+                : () async {
+                    final newUserModel = await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => EditProfile(this.userModel, this.widget.connection)));
+                    if (newUserModel != null) {
+                      setState(() {
+                        this.userModel = newUserModel;
+                      });
+                    }
+                  },
+          ),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -85,10 +120,10 @@ class _ProfileViewState extends State<ProfileView> {
               buildUserSummary(),
               Container(
                 child: MiddleNavBar(
-                    labels: ["Latest", "Most liked", "Most commented"],
+                    labels: OrderBy.values.map((t) => t.screenDisplay).toList(),
                     onSelect: (number) {
                       setState(() {
-                        orderBy = _orders[number];
+                        orderBy = OrderBy.values[number];
                       });
                     }),
                 padding: EdgeInsets.only(top: 20, bottom: 8),
@@ -99,7 +134,12 @@ class _ProfileViewState extends State<ProfileView> {
         Expanded(
           child: TweetDisplayer(
             get: (limit, offset) async {
-              return await getProfileTweets(username: widget.username, orderBy: orderBy, limit: limit, offset: offset);
+              return await getProfileTweets(
+                  username: widget.username,
+                  orderBy: orderBy,
+                  limit: limit,
+                  offset: offset,
+                  connection: this.widget.connection);
             },
             connection: widget.connection,
             key: UniqueKey(),
@@ -107,6 +147,20 @@ class _ProfileViewState extends State<ProfileView> {
         ),
       ],
     );
+
+    final withRefresh = RefreshIndicator(
+        child: colum,
+        onRefresh: () async {
+          print("refresh");
+          this.loadData();
+        });
+    if (widget.addScaffold) {
+      return Scaffold(
+        body: colum,
+      );
+    } else {
+      return colum;
+    }
   }
 
   Widget buildRetry() {
@@ -137,96 +191,6 @@ class _ProfileViewState extends State<ProfileView> {
           },
         )
       ],
-    );
-  }
-
-  Widget buildUpperStack(BuildContext context) {
-    final children = [
-      Positioned(
-        child: Container(
-          height: 150,
-          width: double.infinity,
-          decoration:
-              BoxDecoration(color: Colors.blue, border: Border(bottom: BorderSide(color: Colors.white, width: 0))),
-        ),
-      ),
-      Positioned(
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 0),
-              ),
-            ),
-            Container(
-              child: ProfilePicture(
-                username: this.widget.username,
-                handler: ErrorHandler(context),
-                connection: this.widget.connection,
-                size: 90,
-                clickable: false,
-              ),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 0),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ],
-        ),
-        top: 110,
-        left: 30,
-      ),
-      Positioned(
-        child: TextButton(
-          onPressed: () {
-            // TODO : Edit profile
-            print("edit profile");
-          },
-          child: Container(
-            child: Container(
-              padding: EdgeInsets.all(3),
-              child: Text(
-                "Editer le profil",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w900),
-              ),
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              border: Border.all(color: Color.fromARGB(255, 85, 99, 110)),
-            ),
-          ),
-        ),
-        right: 30,
-        top: 170,
-      ),
-    ];
-    if (this.widget.provideReturnArrow) {
-      children.add(
-        Positioned(
-          top: 10,
-          left: 10,
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            style: IconButton.styleFrom(
-                backgroundColor: Colors.black.withOpacity(0.4), minimumSize: Size.zero, padding: EdgeInsets.all(4)),
-          ),
-        ),
-      );
-    }
-    return Stack(
-      clipBehavior: Clip.none,
-      children: children,
     );
   }
 

@@ -4,7 +4,7 @@ import 'package:twixer/DataLogic/browsing.dart';
 import 'package:twixer/DataLogic/search.dart';
 import 'package:twixer/Widgets/displayers/profile_displayer.dart';
 import 'package:twixer/Widgets/displayers/recent_search_displayer.dart';
-import 'package:twixer/Widgets/error_handler.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
 
 /// View displayed when the user is typing in the search bar.
 class SearchingView extends StatefulWidget {
@@ -41,7 +41,6 @@ class _SearchingViewState extends State<SearchingView> {
                 ? new RecentSearchDisplayer(
                     connection: widget.connection,
                     executeSearch: (value) {
-                      print("search $value");
                       doSearch(context, value);
                     })
                 : ProfileDisplayer(

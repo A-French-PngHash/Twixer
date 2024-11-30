@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twixer/DataLogic/actions.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/Views/navigation.dart';
 import 'package:twixer/config.dart';
@@ -13,8 +14,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Navigation(
-        connection: Connection("titouan", false, username: "titouan"),
+      home: SafeArea(
+        child: Navigation(
+          connection: Connection("titouan", false, 1, username: "titouan"),
+        ),
       ),
       theme: ThemeData(fontFamily: "Quicksand", brightness: Brightness.light, useMaterial3: true).copyWith(
           textTheme: TextTheme(
@@ -52,3 +55,9 @@ MaterialColor getMaterialColor(Color color) {
 
   return MaterialColor(color.value, shades);
 }
+
+ButtonStyle twixerIconButtonStyle = IconButton.styleFrom(
+    backgroundColor: Colors.black.withOpacity(0.4),
+    minimumSize: Size.zero,
+    padding: EdgeInsets.all(6),
+    foregroundColor: Colors.white);

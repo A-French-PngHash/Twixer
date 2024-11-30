@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:twixer/Widgets/buttons/button_with_loading.dart';
-import 'package:twixer/Widgets/error_handler.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
 
 /// Displayer is a convenient way to show a list of widget that is fetched from a suplied
 /// `get` function returning a future. It asynchronously loads elements as the list is browsed.

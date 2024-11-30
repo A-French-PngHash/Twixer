@@ -3,7 +3,7 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/Views/homepage.dart';
 import 'package:twixer/Views/profile.dart';
 import 'package:twixer/Views/search.dart';
-import 'package:twixer/Widgets/error_handler.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
 
 class Navigation extends StatefulWidget {
   final Connection connection;
@@ -23,7 +23,7 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  int index = 0;
+  int index = 2;
 
   @override
   Widget build(BuildContext context) {

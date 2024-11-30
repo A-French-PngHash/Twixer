@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataLogic/profile_picture.dart';
 import 'package:twixer/Views/profile.dart';
-import 'package:twixer/Widgets/error_handler.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
 
 /// Automatically fetches the profile picture for the given user.
 class ProfilePicture extends StatefulWidget {
@@ -60,6 +60,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                       errorHandler: ErrorHandler(context),
                       connection: this.widget.connection,
                       provideReturnArrow: true,
+                      addScaffold: true,
                     ),
                   ),
                 );

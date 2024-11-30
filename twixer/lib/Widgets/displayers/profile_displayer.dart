@@ -3,7 +3,7 @@ import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataModel/profile_card_model.dart';
 import 'package:twixer/Widgets/cards/profile_card.dart';
 import 'package:twixer/Widgets/displayers/displayer.dart';
-import 'package:twixer/Widgets/error_handler.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
 
 class ProfileDisplayer extends StatelessWidget {
   final Future<(bool, List<ProfileCardModel>?, String?)> Function(int limit, int offset) get;

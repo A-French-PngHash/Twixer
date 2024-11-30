@@ -14,6 +14,8 @@ class ErrorHandler {
       // Call succeeded.
       return result.$2;
     } else {
+      print("error");
+      print(result.$3);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Error while loading : \n ${result.$3!}"),
       ));

@@ -3,8 +3,11 @@ import 'package:twixer/DataLogic/actions.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataModel/tweet_model.dart';
 import 'package:twixer/Views/profile.dart';
-import 'package:twixer/Widgets/error_handler.dart';
-import 'package:twixer/Widgets/profile_picture.dart';
+import 'package:twixer/Widgets/buttons/twixer_button.dart';
+import 'package:twixer/Widgets/cards/tweet_card.dart';
+import 'package:twixer/Widgets/notification/twixer_notification.dart';
+import 'package:twixer/Widgets/other/error_handler.dart';
+import 'package:twixer/Widgets/other/profile_picture.dart';
 import 'package:twixer/config.dart';
 
 class WriteTweet extends StatelessWidget {
@@ -12,10 +15,17 @@ class WriteTweet extends StatelessWidget {
   late final ErrorHandler errorHandler;
   late final TextEditingController _controller;
 
+  /// The context before the post view is to be displayed. This is used to
+  /// display a notification when the user is back on this view once the tweet
+  /// has been posted.
+  final BuildContext initialContext;
+
   /// A tweet can be posted in response to another tweet.
   final TweetModel? respondingTo;
+  final TweetModel? retweeting;
 
-  WriteTweet({required this.connection, this.respondingTo}) {
+  WriteTweet(
+      {required this.connection, this.respondingTo, this.retweeting, required BuildContext this.initialContext}) {
     this._controller = TextEditingController();
   }
 
@@ -27,39 +37,38 @@ class WriteTweet extends StatelessWidget {
           title: Text(""),
           leading: IconButton(
             onPressed: () {
+              this._controller.dispose();
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.close),
           ),
           actions: [
-            Container(
-              padding: EdgeInsets.only(right: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: BLUE,
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: TextButton(
-                  onPressed: () async {
-                    if (this._controller.text != "") {
-                      postTweet(connection, this._controller.text,
-                              this.respondingTo == null ? null : this.respondingTo!.id)
-                          .then((result) async {
-                        await this.errorHandler.handle(result);
-                      });
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: Text(
-                    "Post",
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-              ),
+            TwixerButton(
+              "Post",
+              style: TwixerButtonStyle.filled,
+              onPressed: () async {
+                if (this._controller.text != "") {
+                  if (this.retweeting != null) {
+                    retweet(this.connection, this.retweeting!.id, this._controller.text).then((result) async {
+                      await this.errorHandler.handle(result);
+                      Navigator.of(this.initialContext).overlay!.insert(OverlayEntry(builder: (context) {
+                        return TwixerNotification(text: "You tweet has been published.");
+                      }));
+                    });
+                  } else {
+                    postTweet(
+                            connection, this._controller.text, this.respondingTo == null ? null : this.respondingTo!.id)
+                        .then((result) async {
+                      await this.errorHandler.handle(result);
+                      Navigator.of(this.initialContext).overlay!.insert(OverlayEntry(builder: (context) {
+                        return TwixerNotification(text: "You tweet has been published.");
+                      }));
+                    });
+                  }
+
+                  Navigator.of(context).pop();
+                }
+              },
             ),
           ],
           bottom: PreferredSize(
@@ -69,7 +78,9 @@ class WriteTweet extends StatelessWidget {
                 height: 0.3,
               )),
         ),
-        body: this.respondingTo == null ? classicPost(context) : responsePost(context, this.respondingTo!));
+        body: this.respondingTo != null
+            ? responsePost(context, this.respondingTo!)
+            : (this.retweeting != null ? retweetPost(context, this.retweeting!) : classicPost(context)));
   }
 
   /// Simple new tweet, not responding nor retweeting anything.
@@ -80,6 +91,31 @@ class WriteTweet extends StatelessWidget {
     );
   }
 
+  Widget retweetPost(BuildContext context, TweetModel retweeting) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildTextField(context, minLines: 1),
+            Padding(
+              padding: EdgeInsets.only(left: 50, right: 10),
+              child: TweetCard(
+                retweeting,
+                this.connection,
+                ErrorHandler(context),
+                clickable: false,
+                style: TweetDisplayStyle.retweetPreview,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Tweet retweeting another one.
   Widget responsePost(BuildContext context, TweetModel respondingTo) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -116,7 +152,7 @@ class WriteTweet extends StatelessWidget {
     );
   }
 
-  Widget buildTextField(BuildContext context) {
+  Widget buildTextField(BuildContext context, {int minLines = 3}) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,9 +170,9 @@ class WriteTweet extends StatelessWidget {
             controller: this._controller,
             autofocus: true,
             autocorrect: true,
-            maxLength: 2600,
+            maxLength: 260,
             maxLines: null,
-            minLines: 3,
+            minLines: minLines,
             decoration: InputDecoration(
               hintText: "What's on your mind ?",
               border: InputBorder.none,

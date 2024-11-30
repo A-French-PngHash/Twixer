@@ -13,9 +13,10 @@ class Connection {
   /// An instance of this object is passed to the datalogic functions when making calls to api.
   String token;
   bool isGuest;
+  int user_id;
   String? username;
 
-  Connection(this.token, this.isGuest, {this.username});
+  Connection(this.token, this.isGuest, this.user_id, {this.username});
 
   /// Logs the user in using the provided credentials.
   /// The bool returned indicates whether the request was sucessful in which case a Connection instance is passed.
@@ -30,9 +31,9 @@ class Connection {
 
   static Future<(bool, Connection?, String?)> _util(String username, String password, method, route) async {
     final digest = _computeDigest(password, username);
-    final result = await requester.requestApi(method, route, {"username": username, "digest": digest});
+    final result = await requester.request(method, route, {"username": username, "digest": digest, "name": username});
     if (result.$1) {
-      return (true, Connection(result.$2["token"], false, username: username), null);
+      return (true, Connection(result.$2["token"], false, result.$2["user-id"], username: username), null);
     } else {
       return (false, null, result.$2["error"] as String);
     }

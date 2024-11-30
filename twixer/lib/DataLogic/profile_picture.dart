@@ -5,11 +5,11 @@ import 'package:http/http.dart' as http;
 import 'package:twixer/DataLogic/request_util.dart';
 
 Future<(bool, Image?, String?)> getProfilePicture(String username) async {
-  final response = await RequesterWithCacheInterceptor()
-      .rawRequestApi(http.get, "/profile/picture", {"username": username}, cacheResponse: true, expirationDuration: 6);
+  final response = await RequesterWithCacheInterceptor().requestNoParsing(
+      http.get, "/profile/picture", {"username": username},
+      cacheResponse: true, expirationDuration: 6);
   if (response.statusCode == 200) {
     if (response.contentLength == 0) {
-      print("0 length");
       return (true, null, null);
     } else {
       return (
