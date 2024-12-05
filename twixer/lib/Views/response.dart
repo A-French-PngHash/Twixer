@@ -6,6 +6,7 @@ import 'package:twixer/DataModel/tweet_model.dart';
 import 'package:twixer/Widgets/cards/tweet_card.dart';
 import 'package:twixer/Widgets/displayers/tweet_displayer.dart';
 import 'package:twixer/Widgets/other/error_handler.dart';
+import 'package:twixer/Widgets/response_order_dropdown/response_order_dropdown.dart';
 
 class Response extends StatefulWidget {
   final TweetModel initialTweet;
@@ -18,7 +19,7 @@ class Response extends StatefulWidget {
 }
 
 class _ResponseState extends State<Response> {
-  OrderBy dropDownButtonValue = OrderBy.date;
+  OrderBy selectedOrder = OrderBy.date;
 
   @override
   Widget build(BuildContext context) {
@@ -39,26 +40,18 @@ class _ResponseState extends State<Response> {
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: DropdownButton(
-                focusColor: Colors.white,
-                borderRadius: BorderRadius.zero,
-                underline: Container(),
-                elevation: 0,
-                isDense: true,
-                value: dropDownButtonValue,
-                items: OrderBy.values.map((t) => DropdownMenuItem(child: Text(t.screenDisplay), value: t)).toList(),
-                onChanged: (newVal) {
-                  if (newVal != null) {
-                    setState(() {
-                      this.dropDownButtonValue = newVal;
-                    });
-                  }
-                }),
+            child: Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: ResponseOrderDropdown(onSelect: (selected) {
+                  setState(() {
+                    this.selectedOrder = selected;
+                  });
+                })),
           ),
           Expanded(
             child: TweetDisplayer(
               get: (limit, offset) async {
-                return await getResponseTweet(widget.initialTweet.id, limit, offset, this.dropDownButtonValue,
+                return await getResponseTweet(widget.initialTweet.id, limit, offset, this.selectedOrder,
                     connection: this.widget.connection);
               },
               connection: widget.connection,
