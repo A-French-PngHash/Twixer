@@ -1,4 +1,4 @@
-from profile import Profile
+from db.retweet import Retweet
 from db.base_model import *
 from db.search import Search
 from db.user import *
@@ -16,34 +16,20 @@ from playhouse.shortcuts import model_to_dict, dict_to_model
 from logic.auth import signup
 datab.connect()
 
-#User.create(username="charlie", hashpass = "hashcharlie", rights = 1)
-"""
-datab.drop_tables([User])
-datab.create_tables([User, Connection])
-User.create(username="titouan", hashpass = "hash", rights = 1)
-user = (
-	User
-	.select()
-	.where(User.username == "titouan"))[0]
 
-print(user.username)
-print(time.time())
-
-Connection.create(user = user, token = "montoken", expired = False, delivery_date = int(time.time()))
-"""
-
-#right = rights.get_rights("montoken")
-#Twe"et.create()
-datab.drop_tables([Tweet, User, Connection, Follow, Search])
+datab.drop_tables([Tweet, User, Connection, Follow, Search, Retweet, Heart])
 datab.create_tables([Follow])
+datab.create_tables([Heart])
+
 datab.create_tables([Tweet, User, Connection, Search])
+datab.create_tables([Retweet])
 hash1 = hashlib.md5(f"titouan:password".encode("utf-8")).hexdigest()
 hash2 = hashlib.md5(f"tymeo:password".encode("utf-8")).hexdigest()
 hash3 = hashlib.md5(f"elouan:password".encode("utf-8")).hexdigest()
 
-titouan = signup("titouan", hash1)
-tymeo = signup("tymeo", hash2)
-elouan = signup("elouan", hash3)
+titouan = signup("titouan", hash1, "Titouan Thomson")
+tymeo = signup("tymeo", hash2, "Tymeo Dupuy")
+elouan = signup("elouan", hash3, "Elouan Joule")
 elouan.description = "Bonjour, moi c'est elouan"
 tymeo.description = " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut urna dui, sollicitudin sed interdum sed, gravida eu est. Donec porta arcu at sollicitudin sodales. Nulla vulputate enim vulputate metus egestas mollis. Vivamus in bibendum lacus. Quisque vel condimentum turpis. Quisque sed mauris quis lorem gravida sodales in sed massa. Integer eget purus orci. Morbi at pulvinar leo, eu dignissim metus. Nullam vel magna eget velit aliquet imperdiet. Vivamus vel fermentum ex, sed tempus mauris. Pellentesque id vulputate risus. "
 elouan.save()

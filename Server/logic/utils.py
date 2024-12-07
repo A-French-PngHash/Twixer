@@ -1,4 +1,5 @@
 from db.heart import Heart
+from db.retweet import Retweet
 from db.tweet import Tweet
 from db.user import User
 import PIL.Image
@@ -14,24 +15,24 @@ def user_exist(username:str):
     return len(users) > 0
 
 
-def tweet_select():
+def tweet_select(author_id=None):
     """
     Selects the rights field for the tweet object.
 
+    - author_id : The id of the author executing the request.
+
     WARNING : Already joins the user table.
     """
-    authorId = 1
-    subquery = (Heart 
-    .select(Heart.id)
-    .where(
-        authorId == Heart.author_id
-        
+    subqueryHeart = (Heart 
+        .select(Heart.id)
+        .where(author_id == Heart.author_id)
+        .where(Tweet.id == Heart.tweet_id)
     )
-    .where(Tweet.id == Heart.tweet_id)
-    )
-
-    returning = (Tweet
-            .select(User.username, 
+    subqueryRetweet = (Retweet
+                       .select(Retweet.id)
+                       .where(Retweet.author_id == author_id)
+                       .where(Tweet.id == Retweet.baseTweet_id))
+    arguments = [User.username, 
                     Tweet.id, 
                     Tweet.author, 
                     Tweet.replying_to, 
@@ -39,10 +40,12 @@ def tweet_select():
                     Tweet.post_date, 
                     Tweet.number_of_response, 
                     Tweet.like_count, 
-                    Tweet.retweet_id,
-                    fn.exists(subquery).alias("is_liked")
-                    
-            )
+                    Tweet.retweet_id,]
+    if author_id != None:
+        arguments.append(fn.exists(subqueryHeart).alias("is_liked"))
+        arguments.append(fn.exists(subqueryRetweet).alias("is_retweeted"))
+    returning = (Tweet
+            .select(*arguments)
             .join(User)
             )
     return returning
@@ -108,6 +111,25 @@ def need_login(func):
             rights = get_rights(args[0])
         if isinstance(rights ,GuestRight):
             return "You need to be logged in.", 401
+        return func(*args, **kwargs, rights = rights)
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+def optional_login(func):
+    """
+    For this decorator to work, the token must be a NAMED argument (kwarg).
+
+    Pass the `right` parameter to the function.
+    WARNING: Token must be passed as a kwarg to the function otherwise `optional_login` won't find it.
+    """
+    def wrapper(*args, **kwargs):
+        print(kwargs)
+        print(args)
+        rights = None
+        if "token" in kwargs and kwargs["token"] != None:
+            print("token is in, getting rgiths")
+            rights = get_rights(kwargs["token"])
         return func(*args, **kwargs, rights = rights)
 
     wrapper.__name__ = func.__name__

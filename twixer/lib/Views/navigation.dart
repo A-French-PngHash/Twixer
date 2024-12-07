@@ -35,6 +35,7 @@ class _NavigationState extends State<Navigation> {
               username: widget.connection.username!,
               errorHandler: ErrorHandler(context),
               connection: widget.connection,
+              showLogoutButton: true,
             ),
 
       /// TODO : When implementing GUEST MODE, prevent user from accessing the profile page.

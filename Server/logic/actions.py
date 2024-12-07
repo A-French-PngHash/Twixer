@@ -94,7 +94,7 @@ def like(token:str, tweet_id : int, rights = None):
         return {"like_status" : 0}, 200
 
 @need_login
-def retweet(token:str, tweet_id : int, content : str, rights = None):
+def retweet(token:str, tweet_id : int, content : str, rights):
     tweet = (Tweet
         .select()
         .where(Tweet.id == tweet_id))
@@ -109,7 +109,7 @@ def retweet(token:str, tweet_id : int, content : str, rights = None):
         .where((Tweet.retweet_id == tweet_id) & (Tweet.author_id == rights.associated_user.id)))
 
     if len(retweets) == 0:
-        Tweet.create(tweet=tweet[0], date=time.time(), author=rights.associated_user, retweet_id = tweet_id, content = content)
+        Tweet.create(tweet=tweet[0], author=rights.associated_user, retweet_id = tweet_id, content = "" if content == None else content, post_date=time.time())
         return {"retweet_status" : 1}, 200
     else:
         return "You already retweeted this tweet", 403

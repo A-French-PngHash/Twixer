@@ -25,9 +25,9 @@ def delete_tweet(output):
         return "", 200
 
 @app.route('/retweet', methods=["POST"])
-@get_headers(["token", "tweet-id", "content"])
+@get_headers(["token", "tweet-id"])
 def retweet(output):
-    message,code = actions.retweet(output[0], output[1], output[2])
+    message,code = actions.retweet(output[0], output[1], request.headers.get("content"))
     if code != 200:
         return error(message), code
     else:
@@ -45,7 +45,7 @@ def like(output):
 @app.route('/follow', methods=["POST"])
 @get_headers(["username-to-follow", "token"])
 def follow(output):
-    message, code = actions.follow(token = output[1], user_to_follow_username=output[0])
+    message, code = actions.follow(token = output[1], user_to_follow_username=output[0].lower())
     if code != 200:
         return error(message), code
     else:

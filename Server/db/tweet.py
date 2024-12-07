@@ -21,6 +21,7 @@ class Tweet(db.base_model.BaseModel):
         """
         drop_trigger_removed="""
         DROP TRIGGER IF EXISTS like_removed_trigger;"""
+        
         new_like_trigger = """
         CREATE TRIGGER like_trigger 
         AFTER INSERT ON Heart 
@@ -36,8 +37,9 @@ class Tweet(db.base_model.BaseModel):
         BEGIN UPDATE Tweet SET like_count = like_count - 1 
         WHERE OLD.tweet_id = Tweet.id; END
         """
+
         cls._meta.database.execute_sql(drop_trigger_like)
-        cls._meta.database.execute_sql(drop_trigger_removed)
+        cls._meta.database.execute_sql(drop_trigger_removed)        
         cls._meta.database.execute_sql(like_removed_trigger)
         cls._meta.database.execute_sql(new_like_trigger)
 

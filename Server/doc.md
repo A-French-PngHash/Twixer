@@ -23,54 +23,67 @@ There are three types of privileges available :
 Logs a user in by returning a token.
 
 Parameters in headers:
-	- username
-	- digest (see login section for how to compute it)
+- username
+- digest (see login section for how to compute it)
+- name
+
+Replies:
+{
+	"token" : 
+	"user-id" : 
+}
 
 
 ### POST /signup
 Creates a user and returns a connection token.
 
 Parameters in headers:
-	- username
-	- digest (see login section)
+  - username
+  - digest (see login section)
+  - name
 
+Replies:
+{
+	"token" : 
+	"user-id" : 
+}
 ## Common actions
 
 ### POST /tweet
 Creates a new tweet.
 
 Parameters in headers:
-	- token : for authentication
-	- content (must be under 260 characters of length)
-	- replies-to : id of the tweet it is replying to (-1 otherwise)
+- token : for authentication
+- content (must be under 260 characters of length)
+- replies-to : id of the tweet it is replying to (-1 otherwise)
 
 ### DELETE /tweet
 Deletes a tweet.
 
 Parameters in headers:
-	- token : for authentication.
-	- tweet-id : Id of the tweet to delete.
+- token : for authentication.
+- tweet-id : Id of the tweet to delete.
 
 ### POST /retweet
 Retweets. The author of a tweet is not allowed to retweet his own tweet.
 
 Parameters in headers : 
-	- token : for authentication
-	- tweet-id : tweet to retweet
-	- content : Content of the retweet
+- token : for authentication
+- tweet-id : tweet to retweet
+- content : Content of the retweet
 
 ### POST /like
 Likes a tweet. If the tweet is already liked, deletes the like.
 
 Parameters in headers : 
-	- token : for authentication
-	- tweet-id : tweet to like
+- token : for authentication
+- tweet-id : tweet to like
 
 ### POST /follow
-Follows a user.
+Follows a user. If the user is already followed, unfollows.
 Parameters in headers : 
-	- token : for authentication
-	- user-to-follow
+- token : for authentication
+- username-to-follow : Username of the user to follow
 
 ## Browsing
 
@@ -79,12 +92,15 @@ Parameters in headers :
 Search for a specific string among users and tweet. Users are sorted according to number of followers. Relevant tweets are ordered according to the order_tweets-by field. Limits at 20 users and 50 tweets.
 
 Parameters in headers:
-	- search-string
-	- order-by : ["date", "popularity", "number_of_response"]
-	- user-limit
-	- user-offset
-	- tweet-limit
-	- tweet-offset
+- search-string
+- order-by : ["date", "popularity", "number_of_response"]
+- user-limit
+- user-offset
+- tweet-limit
+- tweet-offset
+
+Optional parameters in headers:
+- token (to get more data about the tweet)
 
 returns : 
 {"users":[], "tweets":[]}
@@ -93,10 +109,13 @@ returns :
 Gets the tweets that respond to the given tweet.
 
 Parameters in headers:
-	- tweet-id
-	- limit
-	- offset
-	- order-by: ["date", "popularity", "number_of_response"]
+- tweet-id
+- limit
+- offset
+- order-by: ["date", "popularity", "number_of_response"]
+
+Optional parameters in headers:
+- token (to get more data about the tweet)
 
 {"tweets" : []}
 
@@ -104,17 +123,20 @@ Parameters in headers:
 Gets the tweets on the feed.
 
 Parameters in headers:
-	- token
-	- limit
-	- offset
+- token
+- limit
+- offset
 
-{"tweets" : []}
+{"tweets" : {}}
 
 ### GET /tweet
 Gets the requested tweet.
 
 Parameters in headers:
-	- tweet-id
+- tweet-id
+
+Optional parameters in headers:
+- token (to get more data about the tweet)
 
 {"tweet" : {}}
 
@@ -124,40 +146,50 @@ Parameters in headers:
 Return data on the given user as well as tweets ordered by date (most recent first)
 
 Parameters in headers:
-	- username
-	- length : Number of tweet to retrieve.
-	- offset
-	- order-by : ["date", "popularity", "number_of_response"]
+- username
+- length : Number of tweet to retrieve.
+- offset
+- order-by : ["date", "popularity", "number_of_response"]
+
+Optional parameters in headers:
+- token (to get more data about the tweet)
 
 Returns :
 {
-	"username": ""
-	"following":
-	"follower":
-	"join_date" : iso 8601 format,
-	"birth_date" : iso 8601 format (field may not be there if the user did not set a birth_date)
-	description : ""
-	"tweets": []
+"username": ""
+"name": ""
+"profile_banner_color": string, hex color
+"following":
+"follower":
+"join_date" : iso 8601 format,
+"description" : ""
+"tweets": [],
+OPTIONAL :
+"birth_date" : iso 8601 format (field may not be there if the user did not set a birth_date),
+"is_following" : If the request is authentified (executed using an account), this indicates if the user doing the request is following the user requested 
+
 }
 
-### POST /profile
+### POST /profile
 Updates the profile data for the user.
 
 Parameters in headers :
-	- token
+- token
 
 Optionnal parameters in headers : 
-	- description : to update the user's description.
-	- birth-date  : to update the user's birht date. (use iso format)
+- description : update description.
+- birth-date  : update the user's birht date. (use iso format)
+- profile-banner-color: updtate the user's banner color (use hex string)
+- name: update the user's name (max 255 char)
 
 Optionnal file (in body):
-	- profile-picture : if provided updates the user's profile picture. Will resize and truncate the image if necessary to make it 200x200.
+- profile-picture : if provided updates the user's profile picture. Will resize and truncate the image if necessary to make it 200x200.
 
-### GET /profile/picture
+### GET /profile/picture
 Gets the profile picture of the user
 
 Parameters in headers:
-	- username
+- username
 
 Returns the profile picture in body as file under the key profile-picture. If the profile picture does not exist, returns an empty response using code 200
 
@@ -167,7 +199,7 @@ Returns the profile picture in body as file under the key profile-picture. If th
 Gets recent searches for the user.
 
 Parameters in headers:
-	- token
+- token
 
 Returns {"searches" : []}
 
@@ -175,11 +207,11 @@ Returns {"searches" : []}
 Add a new search entry.
 
 Parameters in headers:
-	- token
-	- content
+- token
+- content
 
-### DELETE /search/history
+### DELETE /search/history
 Delete all recent searches.
 
 Parameters in headers:
-	- token
+- token

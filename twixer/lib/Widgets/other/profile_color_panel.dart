@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/actions.dart';
 import 'package:twixer/DataLogic/auth.dart';
 import 'package:twixer/DataModel/user_model.dart';
+import 'package:twixer/Views/auth.dart';
 import 'package:twixer/Widgets/buttons/twixer_button.dart';
 import 'package:twixer/Widgets/other/color_dialog.dart';
 import 'package:twixer/Widgets/other/error_handler.dart';
@@ -18,6 +19,8 @@ class ProfileColorPanel extends StatefulWidget {
 
   /// Edit button for the color and the profile picture.
   final bool showEditButtons;
+
+  final bool showLogoutButton;
 
   /// Show a button that leads to the edit profile page. If this is true, the
   /// button will automatically display the page when pressed.
@@ -52,6 +55,7 @@ class ProfileColorPanel extends StatefulWidget {
     required this.connection,
     required this.userModel,
     required this.errorHandler,
+    required this.showLogoutButton,
     this.editProfilePressed,
     this.colorChanged,
     this.profilePictureChanged,
@@ -141,6 +145,27 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
       );
     }
 
+    if (widget.showLogoutButton) {
+      children.add(Positioned(
+        top: 10,
+        right: 10,
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+              return AuthView(
+                logout: true,
+              );
+            }));
+          },
+          icon: Icon(
+            Icons.logout,
+            color: Colors.white,
+          ),
+          style: twixerIconButtonStyle,
+        ),
+      ));
+    }
+
     if (widget.showEditButtons) {
       children.add(Positioned(
         top: 50,
@@ -166,8 +191,6 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
     }
 
     final following = this.userModel.isFollowing;
-    print("following : ");
-    print(following);
     if (following != null && (widget.connection.username != this.userModel.username)) {
       children.add(
         Positioned(

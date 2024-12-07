@@ -82,6 +82,7 @@ class _EditProfileState extends State<EditProfile> {
             userModel: this._userModel,
             username: this._userModel.username,
             connection: this.widget.connection,
+            showLogoutButton: false,
             errorHandler: ErrorHandler(context),
             profilePictureChanged: (bytes) async {
               ErrorHandler(context).handle(await updateProfilePictureOrInfo(this.widget.connection, imageBytes: bytes));

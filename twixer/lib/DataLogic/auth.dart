@@ -22,18 +22,20 @@ class Connection {
   /// The bool returned indicates whether the request was sucessful in which case a Connection instance is passed.
   /// Otherwise, an error message is given for it to be displayed to the user.
   static Future<(bool, Connection?, String?)> establishLogin(String username, String password) async {
-    return await _util(username, password, http.get, "/login");
+    return await _util(username.toLowerCase(), password, http.get, "/login");
   }
 
   static createAccount(String username, String password) async {
-    return await _util(username, password, http.post, "/signup");
+    return await _util(username.toLowerCase(), password, http.post, "/signup");
   }
 
   static Future<(bool, Connection?, String?)> _util(String username, String password, method, route) async {
-    final digest = _computeDigest(password, username);
-    final result = await requester.request(method, route, {"username": username, "digest": digest, "name": username});
+    final lowerusername = username.toLowerCase();
+    final digest = _computeDigest(password, lowerusername);
+    final result =
+        await requester.request(method, route, {"username": lowerusername, "digest": digest, "name": username});
     if (result.$1) {
-      return (true, Connection(result.$2["token"], false, result.$2["user-id"], username: username), null);
+      return (true, Connection(result.$2["token"], false, result.$2["user-id"], username: lowerusername), null);
     } else {
       return (false, null, result.$2["error"] as String);
     }

@@ -22,15 +22,23 @@ class Homepage extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: AlignmentDirectional.topStart,
         children: [
-          TweetDisplayer(
-            get: (limit, offset) {
-              return getTweetOnHomepage(connection: connection, limit: limit, offset: offset);
-            },
-            connection: connection,
+          Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: TweetDisplayer(
+                get: (limit, offset) {
+                  return getTweetOnHomepage(connection: connection, limit: limit, offset: offset);
+                },
+                connection: connection,
+              ),
+            ),
           ),
           Positioned(
             child: NewTweetButton(onPressed: () {
-              Navigator.of(context).push(ComingFromBottomRoute(WriteTweet(connection: this.connection, initialContext: context,)));
+              Navigator.of(context).push(ComingFromBottomRoute(WriteTweet(
+                connection: this.connection,
+                initialContext: context,
+              )));
             }),
             bottom: 20,
             right: 20,

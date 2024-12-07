@@ -8,11 +8,12 @@ from logic import browsing
 
 @app.route("/search", methods=["GET"])
 @get_headers(["search-string", "order-by", "user-limit", "user-offset", "tweet-limit", "tweet-offset"])
-def search(output):
+@get_optional_header(["token"])
+def search(output, optional=None):
     users,code = browsing.search_user(output[0], output[2], output[3])
     if code != 200:
         return error(users), code
-    tweets,code = browsing.search_tweet(output[0], output[1], output[4], output[5])
+    tweets,code = browsing.search_tweet(output[0], output[1], output[4], output[5], token=optional["token"])
     if code != 200:
         return error(tweets), code
     return {"users":users, "tweets":tweets}
@@ -23,6 +24,7 @@ def get_homepage(output):
     tweets,code = browsing.get_homepage_tweets(output[0], output[1], output[2])
     if code != 200:
         return error(tweets), code
+    print(tweets)
     return {"tweets":tweets}, code
 
 @app.route("/response", methods=["GET"])
@@ -35,8 +37,10 @@ def get_response(output):
 
 @app.route("/tweet", methods=["GET"])
 @get_headers(["tweet-id"])
-def get_tweet(output):
-    tweet, code = browsing.get_tweet_by_id(output[0])
+@get_optional_header(["token"])
+def get_tweet(output, optional = None):
+    print(optional)
+    tweet, code = browsing.get_tweet_by_id(output[0], token=optional["token"])
     if code != 200:
         return error(tweet), code
     return {"tweet" : tweet}, code

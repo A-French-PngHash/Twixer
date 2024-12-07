@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twixer/DataLogic/actions.dart';
 import 'package:twixer/DataLogic/auth.dart';
+import 'package:twixer/Views/auth.dart';
 import 'package:twixer/Views/navigation.dart';
 import 'package:twixer/config.dart';
 
@@ -15,18 +16,21 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: SafeArea(
-        child: Navigation(
-          connection: Connection("titouan", false, 1, username: "titouan"),
+        child: AuthView(
+          logout: false,
         ),
       ),
       theme: ThemeData(fontFamily: "Quicksand", brightness: Brightness.light, useMaterial3: true).copyWith(
-          textTheme: TextTheme(
-            bodyLarge: TextStyle(fontSize: 19),
-            labelMedium: TextStyle(
-              color: Color.fromARGB(255, 85, 99, 110),
-            ),
-            headlineSmall: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
-          ).apply(bodyColor: Colors.black, displayColor: Colors.black, fontFamily: "Quicksand"),
+          textTheme: ThemeData(fontFamily: "Quicksand", brightness: Brightness.light, useMaterial3: true)
+              .textTheme
+              .copyWith(
+                bodyLarge: TextStyle(fontSize: 19),
+                labelMedium: TextStyle(
+                  color: Color.fromARGB(255, 85, 99, 110),
+                ),
+                headlineSmall: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+              )
+              .apply(bodyColor: Colors.black, displayColor: Colors.black, fontFamily: "Quicksand"),
           primaryColor: BLUE,
           focusColor: BLUE,
           scaffoldBackgroundColor: Colors.white,

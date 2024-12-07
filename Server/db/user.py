@@ -3,6 +3,8 @@ from peewee import *
 
 class User(db.base_model.BaseModel):
     username = CharField(unique=True)
+    name = CharField()
+    profile_banner_color = CharField(default="1DA1F2")
     hashpass = CharField()
     rights = IntegerField() # 1 or 2 (cannot be 0)
     follower_count = IntegerField(default=0)

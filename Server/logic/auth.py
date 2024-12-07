@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import random
+import select
 from api.api_utils import error
 from db.connection import *
 import time
@@ -22,14 +23,16 @@ def get_token(username : str, hashe : str):
     Returns:
      - a boolean indicating if the login was sucessful
      - the token if the login is sucessful.
+     - the user id if the login is sucessful.
     """
+    username = username.lower()
     hexdigest = hashlib.md5(f"{username}:{hashe}".encode("utf-8")).hexdigest()
     users = (User
         .select()
         .where(
             User.username == username and User.hashpass == hexdigest))
     if len(users) == 0:
-        return False, None
+        return False, None, None
     else:
         connections = (Connection
             .select()
@@ -43,14 +46,14 @@ def get_token(username : str, hashe : str):
         # Generates a new connection.
         token = generate_token(20)
         Connection.create(user=users[0], token = token, expired = False, delivery_date=time.time())
-        return True, token
+        return True, token, users[0].id
 
-def signup(username: str, digest: str):
+def signup(username: str, digest: str, name: str):
     """
     Creates a new user in the database. A user with such username must not already exist.
     """
     hexdigest = hashlib.md5(f"{username}:{digest}".encode("utf-8")).hexdigest()
-    usr = User.create(username=username, hashpass = hexdigest, rights=1, join_date=datetime.datetime.now())
+    usr = User.create(username=username, hashpass = hexdigest, rights=1, join_date=datetime.datetime.now(), name=name)
     data, code = logic.browsing.get_profile_data(username)
     if code != 200:
         return error(data), code

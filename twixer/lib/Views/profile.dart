@@ -29,13 +29,17 @@ class ProfileView extends StatefulWidget {
 
   final bool showFollowButton;
 
+  /// Will only be shown if a scaffold is added to the profile.
+  final bool showLogoutButton;
+
   ProfileView(
       {required this.username,
       required this.errorHandler,
       required this.connection,
       this.provideReturnArrow = false,
       this.showFollowButton = false,
-      this.addScaffold = false});
+      this.addScaffold = false,
+      this.showLogoutButton = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -61,7 +65,6 @@ class _ProfileViewState extends State<ProfileView> {
   void loadData() {
     getProfileDataFor(username: widget.username, connection: widget.connection).then((result) async {
       final userModel = widget.errorHandler.handle(result);
-      print(userModel!.toJson());
       setState(() {
         _loading = false;
         if (userModel == null) {
@@ -94,6 +97,7 @@ class _ProfileViewState extends State<ProfileView> {
             userModel: this.userModel,
             showReturnArrow: this.widget.provideReturnArrow,
             showEditButtons: false,
+            showLogoutButton: this.widget.showLogoutButton,
             showEditProfileButton: (this.widget.connection.username == this.widget.username),
             username: this.widget.username,
             errorHandler: this.widget.errorHandler,
@@ -148,12 +152,6 @@ class _ProfileViewState extends State<ProfileView> {
       ],
     );
 
-    final withRefresh = RefreshIndicator(
-        child: colum,
-        onRefresh: () async {
-          print("refresh");
-          this.loadData();
-        });
     if (widget.addScaffold) {
       return Scaffold(
         body: colum,
@@ -197,18 +195,37 @@ class _ProfileViewState extends State<ProfileView> {
   /// The summary is the zone directly underneath the top stack, it displays
   /// the name, the number of followers, the join date...
   Widget buildUserSummary() {
+    final children = [
+      Row(
+        children: [
+          Text(
+            userModel.name,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          Text(
+            " (@${userModel.username})",
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14, fontStyle: FontStyle.italic),
+          ),
+        ],
+      ),
+      Text("🗓️ joined twixer in ${DateFormat("MMMM").format(userModel.joinDate)} ${userModel.joinDate.year}",
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14))
+    ];
+    if (this.userModel.description != "") {
+      children.insert(
+        1,
+        Text(
+          userModel.description,
+          maxLines: 3,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      );
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          "@${userModel.username}",
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        Text("🗓️ joined twixer in ${DateFormat("MMMM").format(userModel.joinDate)} ${userModel.joinDate.day}",
-            style: Theme.of(context).textTheme.bodyLarge)
-      ],
+      children: children,
     );
   }
 }
