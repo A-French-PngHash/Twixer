@@ -27,51 +27,48 @@ class _ResponseOrderDropdownState extends State<ResponseOrderDropdown> {
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: link,
-      child: TapRegion(
-        onTapOutside: (tap) {
-          if (this._controller.isShowing) {
-            this._controller.toggle();
-          }
-        },
-        child: OverlayPortal(
-          controller: this._controller,
-          overlayChildBuilder: (context) {
-            return Positioned(
-              height: 130,
-              width: this._buttonWidth! + 10,
-              child: CompositedTransformFollower(
-                link: link,
-                targetAnchor: Alignment.bottomLeft,
-                child: TapRegion(
-                  onTapOutside: (tap) {
-                    if (this._controller.isShowing) {
+      child: OverlayPortal(
+        controller: this._controller,
+        overlayChildBuilder: (context) {
+          return Positioned(
+            height: 130,
+            width: this._buttonWidth! + 10,
+            child: CompositedTransformFollower(
+              link: link,
+              targetAnchor: Alignment.bottomLeft,
+              child: TapRegion(
+                onTapOutside: (tap) {
+                  if (this._controller.isShowing) {
+                    final tappos = tap.position;
+                    final buttonpos = link.leader!.offset;
+                    if (buttonpos < tappos && (buttonpos + Offset(this._buttonWidth!, this._buttonHeight!)) > tappos) {
                       this.menuHasBeenHidden = true;
-                      this._controller.toggle();
                     }
-                  },
-                  child: Container(
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(width: 1, color: BLUE),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: OrderBy.values.map((e) {
-                        return buildRowElement(e);
-                      }).toList(),
-                    ),
+                    this._controller.toggle();
+                  }
+                },
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: BLUE),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: OrderBy.values.map((e) {
+                      return buildRowElement(e);
+                    }).toList(),
                   ),
                 ),
               ),
-            );
-          },
-          child: BaseButton(
-            child: Text("Order response by " + this.selected.screenDisplay.toLowerCase()),
-            onTap: onTap,
-          ),
+            ),
+          );
+        },
+        child: BaseButton(
+          child: Text("Order response by " + this.selected.screenDisplay.toLowerCase()),
+          onTap: onTap,
         ),
       ),
     );
@@ -106,12 +103,13 @@ class _ResponseOrderDropdownState extends State<ResponseOrderDropdown> {
   }
 
   void onTap() {
-    if (this.menuHasBeenHidden) {
-      this.menuHasBeenHidden = !this.menuHasBeenHidden;
-    } else {
+    if (!this._controller.isShowing && !this.menuHasBeenHidden) {
       this._controller.toggle();
+
+      this._buttonWidth = context.size?.width;
+      this._buttonHeight = context.size?.height;
+    } else {
+      this.menuHasBeenHidden = false;
     }
-    this._buttonWidth = context.size?.width;
-    this._buttonHeight = context.size?.height;
   }
 }
