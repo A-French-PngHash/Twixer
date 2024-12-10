@@ -5,9 +5,10 @@ part 'user_model.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class UserModel {
   UserModel(this.follower, this.following, this.username, this.description, this.joinDate, this.birthDate, this.name,
-      this.profileBannerColor,
+      this.profileBannerColor, this.id,
       {this.isFollowing});
 
+  int id;
   int follower;
   int following;
   String name;

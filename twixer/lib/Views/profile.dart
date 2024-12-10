@@ -6,6 +6,7 @@ import 'package:twixer/DataModel/enums/order_by.dart';
 import 'package:twixer/DataModel/user_model.dart';
 import 'package:twixer/Views/edit_profile.dart';
 import 'package:twixer/Widgets/buttons/button_with_loading.dart';
+import 'package:twixer/Widgets/displayers/profile_displayer.dart';
 import 'package:twixer/Widgets/displayers/tweet_displayer.dart';
 import 'package:twixer/Widgets/other/error_handler.dart';
 import 'package:twixer/Widgets/middle_nav_bar/middle_nav_bar.dart';
@@ -53,7 +54,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   /// WARNING : The userModel takes some time to load (a request is sent to the API).
   UserModel userModel = UserModel(
-      0, 0, "Loading...", "Loading...", DateTime.now(), DateTime.now(), "loading", BLUE.value.toRadixString(16));
+      0, 0, "Loading...", "Loading...", DateTime.now(), DateTime.now(), "loading", BLUE.value.toRadixString(16), 0);
   OrderBy orderBy = OrderBy.date;
 
   @override
@@ -209,7 +210,47 @@ class _ProfileViewState extends State<ProfileView> {
         ],
       ),
       Text("🗓️ joined twixer in ${DateFormat("MMMM").format(userModel.joinDate)} ${userModel.joinDate.year}",
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14))
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14)),
+      Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        InkWell(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return buildFollowerFollowingView(false);
+            }));
+          },
+          child: Row(
+            children: [
+              Text(
+                userModel.following.toString(),
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              Text(" following"),
+            ],
+          ),
+        ),
+        Spacer(
+          flex: 1,
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return buildFollowerFollowingView(true);
+            }));
+          },
+          child: Row(
+            children: [
+              Text(
+                userModel.follower.toString(),
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              Text(" follower"),
+            ],
+          ),
+        ),
+        Spacer(
+          flex: 4,
+        )
+      ]),
     ];
     if (this.userModel.description != "") {
       children.insert(
@@ -226,6 +267,22 @@ class _ProfileViewState extends State<ProfileView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: children,
+    );
+  }
+
+  Widget buildFollowerFollowingView(bool follower) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(follower ? "Followers of ${this.userModel.name}" : "Following ${this.userModel.name}"),
+      ),
+      body: ProfileDisplayer(
+          get: (limit, offset) async {
+            final result = follower
+                ? await getFollowers(this.userModel.id, limit, offset)
+                : await getFollowing(this.userModel.id, limit, offset);
+            return result;
+          },
+          connection: this.widget.connection),
     );
   }
 }

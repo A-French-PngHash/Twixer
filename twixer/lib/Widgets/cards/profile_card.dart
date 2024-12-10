@@ -31,6 +31,7 @@ class _ProfileCardState extends State<ProfileCard> {
             errorHandler: ErrorHandler(context),
             connection: this.widget.connection,
             provideReturnArrow: true,
+            addScaffold: true,
           );
         }));
       },

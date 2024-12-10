@@ -72,7 +72,6 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
 
   @override
   Widget build(BuildContext context) {
-    print(userModel.toJson());
     final children = [
       Container(
         height: 200,

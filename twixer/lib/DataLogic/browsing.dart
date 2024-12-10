@@ -107,6 +107,7 @@ Future<(bool, UserModel?, String?)> getProfileDataFor({required String username,
     headers,
     cacheResponse: true,
   );
+  print(result);
   if (result.$1) {
     return (true, UserModel.fromJson(result.$2 as Map<String, dynamic>), null);
   } else {
@@ -140,6 +141,24 @@ Future<(bool, List<TweetModel>?, String?)> getProfileTweets({
   return handleListResponse(result, "tweets", TweetModel.fromJson);
 }
 
+Future<(bool, List<ProfileCardModel>?, String?)> getFollowers(int user_id, int limit, int offset) async {
+  final result = await requester.request(http.get, "/follower", {
+    "user-id": user_id.toString(),
+    "limit": limit.toString(),
+    "offset": offset.toString(),
+  });
+  return handleListResponse(result, "followers", ProfileCardModel.fromJson);
+}
+
+Future<(bool, List<ProfileCardModel>?, String?)> getFollowing(int user_id, int limit, int offset) async {
+  final result = await requester.request(http.get, "/following", {
+    "user-id": user_id.toString(),
+    "limit": limit.toString(),
+    "offset": offset.toString(),
+  });
+  return handleListResponse(result, "following", ProfileCardModel.fromJson);
+}
+
 Future<(bool, List<TweetModel>?, String?)> getResponseTweet(
   int tweetId,
   int limit,
@@ -153,10 +172,8 @@ Future<(bool, List<TweetModel>?, String?)> getResponseTweet(
     "offset": offset.toString(),
     "order-by": orderBy.apiFormat,
   };
-  print("test");
   if (connection != null) {
     headers["token"] = connection.token;
-    print("token");
   }
 
   final result = await requester.request(

@@ -50,7 +50,8 @@ def get_profile_picture(username):
 
 @optional_login
 def get_profile_data(username, token = None, rights : Right = None):
-    arguments = [User.username,
+    arguments = [
+        User.id, User.username,
                 User.name,
                 User.profile_banner_color, 
                 User.join_date,
@@ -69,17 +70,18 @@ def get_profile_data(username, token = None, rights : Right = None):
     if len(users) == 0:
         return "No user with such username", 400
     user = users[0]
-
     # TODO : Optimize this query to make a single one (using subqueries)
     number_of_following = (Follow
                 .select()
-                .where(Follow.following == user)
+                .where(Follow.following_id == user.id)
                 .count())
+    print(number_of_following)
     number_of_follower = (Follow
                 .select()
-                .where(Follow.followed == user)
+                .where(Follow.followed_id == user.id)
                 .count())
     result_dic =  {
+        "id" : user.id,
         "username": user.username.lower(),
         "name":user.name,
         "profile_banner_color":user.profile_banner_color,
@@ -88,6 +90,7 @@ def get_profile_data(username, token = None, rights : Right = None):
         "join_date":user.join_date.isoformat(),
         "description" : user.description,
         }
+    print(result_dic)
     if rights != None:
         result_dic["is_following"] = user.is_following == 1
 
@@ -180,6 +183,28 @@ def get_tweet_by_id(tweet_id : int, token = None, rights : Right = None):
     return tweet[0], 200
 
 
+def get_followers(user_id, limit:int, offset:int):
+    users = (User
+             .select(User.username, User.description)
+             .join(Follow, on = (Follow.following_id == User.id))
+             .where(Follow.followed_id == user_id)
+             .limit(limit)
+             .offset(offset)
+             .dicts()
+             )
+    return list(users), 200
 
+# followed et following
+
+def get_following(user_id, limit:int, offset:int):
+    users = (User
+             .select(User.username, User.description)
+             .join(Follow, on = (Follow.followed_id == User.id))
+             .where(Follow.following_id == user_id)
+             .limit(limit)
+             .offset(offset)
+             .dicts()
+             )
+    return list(users),200
 
 

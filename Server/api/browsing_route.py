@@ -1,4 +1,5 @@
 from flask import request
+from db import follow
 from logic import browsing
 from api.api_utils import *
 
@@ -39,9 +40,19 @@ def get_response(output):
 @get_headers(["tweet-id"])
 @get_optional_header(["token"])
 def get_tweet(output, optional = None):
-    print(optional)
     tweet, code = browsing.get_tweet_by_id(output[0], token=optional["token"])
     if code != 200:
         return error(tweet), code
     return {"tweet" : tweet}, code
 
+@app.route("/follower")
+@get_headers(["user-id", "limit", "offset"])
+def get_followers(output):
+    followers, code = browsing.get_followers(*output)
+    return {"followers" : followers}, code
+
+@app.route("/following")
+@get_headers(["user-id", "limit", "offset"])
+def get_following(output):
+    followers, code = browsing.get_following(*output)
+    return {"following" : followers}, code

@@ -156,6 +156,7 @@ Optional parameters in headers:
 
 Returns :
 {
+"id":""
 "username": ""
 "name": ""
 "profile_banner_color": string, hex color

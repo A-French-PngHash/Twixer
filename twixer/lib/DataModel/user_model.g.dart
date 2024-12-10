@@ -12,13 +12,17 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       json['username'] as String,
       json['description'] as String,
       DateTime.parse(json['join_date'] as String),
-      json['birth_date'] == null ? null : DateTime.parse(json['birth_date'] as String),
+      json['birth_date'] == null
+          ? null
+          : DateTime.parse(json['birth_date'] as String),
       json['name'] as String,
       json['profile_banner_color'] as String,
+      (json['id'] as num).toInt(),
       isFollowing: json['is_following'] as bool?,
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
+      'id': instance.id,
       'follower': instance.follower,
       'following': instance.following,
       'name': instance.name,
