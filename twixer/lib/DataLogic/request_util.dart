@@ -17,7 +17,12 @@ import 'package:twixer/config.dart';
 ///   - `nameFromMethod`
 ///
 class RequesterWithCacheInterceptor {
+  // Singleton :
   static final RequesterWithCacheInterceptor _requester = RequesterWithCacheInterceptor._internal();
+  factory RequesterWithCacheInterceptor() {
+    return _requester;
+  }
+  RequesterWithCacheInterceptor._internal() {}
 
   /// Stores requests and their responses.
   ///
@@ -33,12 +38,6 @@ class RequesterWithCacheInterceptor {
   /// Same as the cache but for raw request (see available methods).
   final Map<String, Map> _rawCache = {};
 
-  factory RequesterWithCacheInterceptor() {
-    return _requester;
-  }
-
-  RequesterWithCacheInterceptor._internal() {}
-
   /// Execute a request if the reponse is not already in cache and then stores
   /// the response in cache according to the specified parameters.
   ///
@@ -52,7 +51,7 @@ class RequesterWithCacheInterceptor {
     String subroute,
     Map<String, String> headers, {
     bool cacheResponse = false,
-    int expirationDuration = 60,
+    int expirationDuration = 0,
   }) async {
     final name = nameFromMethod(method);
 

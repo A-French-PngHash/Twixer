@@ -32,7 +32,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
   @override
   void initState() {
     super.initState();
-    getProfilePicture(widget.username).then((value) {
+    ProfilePictureService().getProfilePicture(widget.username, (value) async {
       final result = widget.handler.handle<Image>(value);
       if (this.mounted && result != null) {
         setState(() {
