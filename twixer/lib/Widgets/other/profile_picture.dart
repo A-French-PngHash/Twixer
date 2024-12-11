@@ -50,8 +50,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(child: child, opacity: animation);
       },
-      child: ElevatedButton(
-        onPressed: this.widget.clickable
+      child: InkWell(
+        onTap: this.widget.clickable
             ? () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -66,10 +66,6 @@ class _ProfilePictureState extends State<ProfilePicture> {
                 );
               }
             : null,
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size.zero,
-          padding: EdgeInsets.zero,
-        ),
         child: Container(
           key: UniqueKey(),
           height: widget.size,

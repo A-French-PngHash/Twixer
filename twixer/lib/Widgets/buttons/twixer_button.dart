@@ -26,8 +26,14 @@ class TwixerButton extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(right: 20),
       child: Container(
+        height: 37,
         decoration: this.style == TwixerButtonStyle.filled ? filledDecoration : outlinedDecoration,
         child: TextButton(
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            minimumSize: Size.zero,
+            textStyle: Theme.of(context).textTheme.bodyLarge!,
+          ),
           onPressed: this.onPressed,
           child: Text(
             this.text,

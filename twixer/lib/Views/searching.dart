@@ -31,27 +31,31 @@ class _SearchingViewState extends State<SearchingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          buildSearchBar(context),
-          Divider(),
-          Expanded(
-            child: (searchContent == "")
-                ? new RecentSearchDisplayer(
-                    connection: widget.connection,
-                    executeSearch: (value) {
-                      doSearch(context, value);
-                    })
-                : ProfileDisplayer(
-                    get: (limit, offset) {
-                      return getProfileSearch(limit: limit, offset: offset, search_string: searchContent);
-                    },
-                    connection: widget.connection,
-                    key: UniqueKey(),
-                  ),
-          )
-        ],
+      body: SafeArea(
+        child: Column(
+          
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildSearchBar(context),
+            Divider(),
+            Flexible(
+              child: (searchContent == "")
+                  ? new RecentSearchDisplayer(
+                      connection: widget.connection,
+                      executeSearch: (value) {
+                        doSearch(context, value);
+                      })
+                  : ProfileDisplayer(
+                      get: (limit, offset) {
+                        return getProfileSearch(limit: limit, offset: offset, search_string: searchContent);
+                      },
+                      connection: widget.connection,
+                      key: UniqueKey(),
+                    ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -23,15 +23,21 @@ class MiddleNavBarState extends State<MiddleNavBar> {
     final List<Widget> widgetList = [];
 
     for (var i = 0; i < widget.labels.length; i++) {
-      widgetList.add(ButtonBarSelected(
-          selected: (i == _selectedIndex),
-          content: widget.labels[i],
-          onPressed: () {
-            setState(() {
-              _selectedIndex = i;
-            });
-            widget.onSelect(i);
-          }));
+      widgetList.add(
+        Padding(
+          padding: EdgeInsets.only(right: 5),
+          child: ButtonBarSelected(
+            selected: (i == _selectedIndex),
+            content: widget.labels[i],
+            onPressed: () {
+              setState(() {
+                _selectedIndex = i;
+              });
+              widget.onSelect(i);
+            },
+          ),
+        ),
+      );
     }
 
     return SingleChildScrollView(

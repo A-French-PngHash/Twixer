@@ -13,6 +13,7 @@ import 'package:twixer/Widgets/middle_nav_bar/middle_nav_bar.dart';
 import 'package:twixer/Widgets/other/profile_color_panel.dart';
 import 'package:twixer/Widgets/other/profile_picture.dart';
 import 'package:twixer/config.dart';
+import 'package:twixer/utils.dart';
 
 class ProfileView extends StatefulWidget {
   final String username;
@@ -87,70 +88,80 @@ class _ProfileViewState extends State<ProfileView> {
     }
     // do something with silver view
 
-    final colum = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          height: 220,
-          child: ProfileColorPanel(
-            key: UniqueKey(),
-            userModel: this.userModel,
-            showReturnArrow: this.widget.provideReturnArrow,
-            showEditButtons: false,
-            showLogoutButton: this.widget.showLogoutButton,
-            showEditProfileButton: (this.widget.connection.username == this.widget.username),
-            username: this.widget.username,
-            errorHandler: this.widget.errorHandler,
-            connection: this.widget.connection,
-            editProfilePressed: (this._loading || !success)
-                ? null
-                : () async {
-                    final newUserModel = await Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => EditProfile(this.userModel, this.widget.connection)));
-                    if (newUserModel != null) {
-                      setState(() {
-                        this.userModel = newUserModel;
-                      });
-                    }
-                  },
+    final colum = SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 220,
+            child: ProfileColorPanel(
+              key: UniqueKey(),
+              userModel: this.userModel,
+              showReturnArrow: this.widget.provideReturnArrow,
+              showEditButtons: false,
+              showLogoutButton: this.widget.showLogoutButton,
+              showEditProfileButton: (this.widget.connection.username == this.widget.username),
+              username: this.widget.username,
+              errorHandler: this.widget.errorHandler,
+              connection: this.widget.connection,
+              editProfilePressed: (this._loading || !success)
+                  ? null
+                  : () async {
+                      final newUserModel = await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => EditProfile(this.userModel, this.widget.connection)));
+                      if (newUserModel != null) {
+                        setState(() {
+                          this.userModel = newUserModel;
+                        });
+                      }
+                    },
+            ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildUserSummary(),
-              Container(
-                child: MiddleNavBar(
-                    labels: OrderBy.values.map((t) => t.screenDisplay).toList(),
-                    onSelect: (number) {
-                      setState(() {
-                        orderBy = OrderBy.values[number];
-                      });
-                    }),
-                padding: EdgeInsets.only(top: 20, bottom: 8),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildUserSummary(),
+                Container(
+                  color: Colors.white,
+                  child: MiddleNavBar(
+                      labels: OrderBy.values.map((t) => t.screenDisplay).toList(),
+                      onSelect: (number) {
+                        setState(() {
+                          orderBy = OrderBy.values[number];
+                        });
+                      }),
+                  padding: EdgeInsets.only(top: 5, bottom: 0),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Center(
+                child: Expanded(
+                  child: TweetDisplayer(
+                    get: (limit, offset) async {
+                      return await getProfileTweets(
+                          username: widget.username,
+                          orderBy: orderBy,
+                          limit: limit,
+                          offset: offset,
+                          connection: this.widget.connection);
+                    },
+                    connection: widget.connection,
+                    key: UniqueKey(),
+                  ),
+                ),
               ),
-            ],
+            ),
           ),
-        ),
-        Expanded(
-          child: TweetDisplayer(
-            get: (limit, offset) async {
-              return await getProfileTweets(
-                  username: widget.username,
-                  orderBy: orderBy,
-                  limit: limit,
-                  offset: offset,
-                  connection: this.widget.connection);
-            },
-            connection: widget.connection,
-            key: UniqueKey(),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
 
     if (widget.addScaffold) {

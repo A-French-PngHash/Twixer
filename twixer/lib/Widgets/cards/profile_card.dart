@@ -23,8 +23,8 @@ class _ProfileCardState extends State<ProfileCard> {
   @override
   Widget build(BuildContext context) {
     double c_width = MediaQuery.of(context).size.width * 0.8;
-    return ElevatedButton(
-      onPressed: () {
+    return InkWell(
+      onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ProfileView(
             username: this.widget.profileModel.username,
@@ -35,13 +35,6 @@ class _ProfileCardState extends State<ProfileCard> {
           );
         }));
       },
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(0),
-        elevation: 0,
-        overlayColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        foregroundColor: Colors.black,
-      ),
       child: Container(
         padding: EdgeInsets.all(10),
         child: Row(
@@ -59,20 +52,23 @@ class _ProfileCardState extends State<ProfileCard> {
                 clickable: false,
               ),
             ),
-            Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                "@${widget.profileModel.username}",
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              Container(
-                width: c_width,
-                child: Text(
-                  widget.profileModel.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+            Flexible(
+              flex: 1,
+              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(
+                  "@${widget.profileModel.username}",
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
-              ),
-            ]),
+                Container(
+                  width: c_width,
+                  child: Text(
+                    widget.profileModel.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ]),
+            ),
           ],
         ),
       ),

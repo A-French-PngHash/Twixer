@@ -57,7 +57,7 @@ class _AuthViewState extends State<AuthView> {
       SharedPreferences.getInstance().then((result) async {
         this.sharedPreferences = result;
         if (this.sharedPreferences.containsKey("connection")) {
-          final List<String> con = this.sharedPreferences.get("connection") as List<String>;
+          final List con = this.sharedPreferences.get("connection") as List;
           await this
               .connectionEstablished((true, Connection(con[0], false, int.parse(con[1]), username: con[2]), null));
         }
@@ -101,89 +101,91 @@ class _AuthViewState extends State<AuthView> {
           )*/
         ],
       ),
-      body: Container(
-        padding: EdgeInsets.all(30),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      login ? "Login" : "Create an account",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    Text(login
-                        ? "Please enter your credentials to begin using your account."
-                        : "Please fill in your username and password to create an account."),
-                  ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(30),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        login ? "Login" : "Create an account",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Text(login
+                          ? "Please enter your credentials to begin using your account."
+                          : "Please fill in your username and password to create an account."),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: TextFormField(
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: TextFormField(
+                    onFieldSubmitted: (value) {
+                      this._passwordFocus.requestFocus();
+                    },
+                    autocorrect: false,
+                    controller: _usernameController,
+                    decoration: InputDecoration(labelText: "Username"),
+                    validator: (value) {
+                      if (value != null && value.length > 40) {
+                        return "Username length must be under 40 characters.";
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                TextFormField(
                   onFieldSubmitted: (value) {
-                    this._passwordFocus.requestFocus();
+                    doAction();
                   },
+                  focusNode: this._passwordFocus,
                   autocorrect: false,
-                  controller: _usernameController,
-                  decoration: InputDecoration(labelText: "Username"),
+                  obscureText: true,
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: "Password"),
                   validator: (value) {
-                    if (value != null && value.length > 40) {
-                      return "Username length must be under 40 characters.";
+                    if (login) {
+                      return null;
+                    }
+                    if (value != null && (value.length > 40 || 8 > value.length)) {
+                      return "Password must be more than 8 characters long and less than 40 characters.";
                     }
                     return null;
                   },
                 ),
-              ),
-              TextFormField(
-                onFieldSubmitted: (value) {
-                  doAction();
-                },
-                focusNode: this._passwordFocus,
-                autocorrect: false,
-                obscureText: true,
-                controller: _passwordController,
-                decoration: InputDecoration(labelText: "Password"),
-                validator: (value) {
-                  if (login) {
-                    return null;
-                  }
-                  if (value != null && (value.length > 40 || 8 > value.length)) {
-                    return "Password must be more than 8 characters long and less than 40 characters.";
-                  }
-                  return null;
-                },
-              ),
-              checkBox(),
-              ButtonWithLoading(
-                loading: loading,
-                onPressed: doAction,
-                child: Text(login ? "Login" : "Signup"),
-              ),
-              Container(
-                padding: EdgeInsets.only(top: 20),
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      login = !login;
-                      this._passwordController.text = "";
-                    });
-                  },
-                  child: Text(login ? "I don't have an account" : "I already have an account"),
+                checkBox(),
+                ButtonWithLoading(
+                  loading: loading,
+                  onPressed: doAction,
+                  child: Text(login ? "Login" : "Signup"),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  (errorMessage == null) ? "" : errorMessage!,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error),
+                Container(
+                  padding: EdgeInsets.only(top: 20),
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        login = !login;
+                        this._passwordController.text = "";
+                      });
+                    },
+                    child: Text(login ? "I don't have an account" : "I already have an account"),
+                  ),
                 ),
-              ),
-            ],
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    (errorMessage == null) ? "" : errorMessage!,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

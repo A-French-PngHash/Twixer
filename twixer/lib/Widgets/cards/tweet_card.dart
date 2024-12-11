@@ -65,6 +65,7 @@ class TweetState extends State<TweetCard> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(0),
         shadowColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
         overlayColor: Colors.grey,

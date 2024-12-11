@@ -74,14 +74,16 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
   Widget build(BuildContext context) {
     final children = [
       Container(
-        height: 200,
+        height: 180,
         width: double.infinity,
         color: Colors.transparent,
       ),
       Positioned(
+        top: -50,
+        bottom: 70,
+        left: 0,
+        right: 0,
         child: Container(
-          height: 150,
-          width: double.infinity,
           decoration: BoxDecoration(
               color: HexColor.fromHex(userModel.profileBannerColor),
               border: Border(bottom: BorderSide(color: Colors.white, width: 0))),
@@ -89,7 +91,7 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
       ),
       Positioned(
         child: buildProfilePictureStack(context),
-        top: 110,
+        top: 100,
         left: 30,
       ),
     ];
@@ -117,7 +119,7 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
             ),
           ),
           right: 30,
-          top: 170,
+          top: 150,
         ),
       );
     }
@@ -128,7 +130,6 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
     if (widget.showReturnArrow) {
       children.add(
         Positioned(
-          top: 10,
           left: 10,
           child: IconButton(
             onPressed: () {
@@ -146,7 +147,6 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
 
     if (widget.showLogoutButton) {
       children.add(Positioned(
-        top: 10,
         right: 10,
         child: IconButton(
           onPressed: () {
@@ -167,7 +167,7 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
 
     if (widget.showEditButtons) {
       children.add(Positioned(
-        top: 50,
+        top: 40,
         right: 100,
         child: IconButton(
           onPressed: () async {
@@ -194,7 +194,7 @@ class _ProfileColorPanelState extends State<ProfileColorPanel> {
       children.add(
         Positioned(
           right: 30,
-          top: 170,
+          top: 160,
           child: TwixerButton(
             following ? "Followed" : "Follow",
             style: following ? TwixerButtonStyle.outlined : TwixerButtonStyle.filled,

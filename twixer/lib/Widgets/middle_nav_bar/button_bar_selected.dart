@@ -4,8 +4,7 @@ class ButtonBarSelected extends StatelessWidget {
   bool selected;
   String content;
   void Function() onPressed;
-  ButtonBarSelected(
-      {required this.selected, required this.content, required this.onPressed});
+  ButtonBarSelected({required this.selected, required this.content, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +17,12 @@ class ButtonBarSelected extends StatelessWidget {
             color: Colors.transparent,
             decoration: TextDecoration.underline,
             //backgroundColor: Theme.of(context).colorScheme.primary,
-            decorationColor: selected
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
+            decorationColor: selected ? Theme.of(context).colorScheme.primary : Colors.transparent,
             decorationThickness: 4,
             decorationStyle: TextDecorationStyle.solid,
             fontWeight: selected ? FontWeight.bold : FontWeight.normal),
       ),
-      style: TextButton.styleFrom(overlayColor: Colors.transparent),
+      style: TextButton.styleFrom(overlayColor: Colors.transparent, padding: EdgeInsets.all(0)),
     );
   }
 }

@@ -45,6 +45,7 @@ class ProfilePictureService {
     final response = await http.get(
       Uri.parse("$API_ROUTE/profile/picture"),
       headers: {"username": element.$1},
+    
     );
     if (response.statusCode == 200) {
       if (response.contentLength == 0) {

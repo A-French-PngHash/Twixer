@@ -34,24 +34,21 @@ class _DisplayerState<T> extends State<Displayer> {
   List<T> _values = [];
   int _itemCount = 0;
 
-  void loadData() {
+  void loadData() async {
     setState(() {
       _loadingData = true;
     });
-    compute((a) async {
-      final value = await widget.get(a.$1, a.$2);
-      setState(() {
-        final res = _handler.handle(value);
-        _loadingData = false;
-        if (res != null) {
-          _itemCount += res.length;
-          for (var value in res) {
-            _values.add(value);
-          }
+    final value = await widget.get(30, _itemCount);
+    setState(() {
+      final res = _handler.handle(value);
+      _loadingData = false;
+      if (res != null) {
+        _itemCount += res.length;
+        for (var value in res) {
+          _values.add(value);
         }
-      });
-    }, (30, _itemCount));
-    widget.get(30, _itemCount).then((value) {});
+      }
+    });
   }
 
   @override
@@ -80,10 +77,7 @@ class _DisplayerState<T> extends State<Displayer> {
                   cacheExtent: 20,
                   controller: controller,
                   itemBuilder: (context, index) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(vertical: 0),
-                      child: widget.buildWidget(_values[index]),
-                    );
+                    return widget.buildWidget(_values[index]);
                   },
                   itemCount: _itemCount,
                   physics: BouncingScrollPhysics(),
