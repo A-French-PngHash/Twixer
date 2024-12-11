@@ -98,7 +98,7 @@ class TweetState extends State<TweetCard> {
                 handler: ErrorHandler(context),
                 size: this.widget.style == TweetDisplayStyle.retweetPreview ? 26 : 40,
                 connection: this.widget.connection!,
-                clickable: this.widget.clickable,
+                clickable: true,
               ),
             ),
             Expanded(

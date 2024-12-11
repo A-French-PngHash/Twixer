@@ -24,12 +24,12 @@ datab.create_tables([Heart])
 datab.create_tables([Tweet, User, Connection, Search])
 datab.create_tables([Retweet])
 hash1 = hashlib.md5(f"titouan:password".encode("utf-8")).hexdigest()
-hash2 = hashlib.md5(f"tymeo:password".encode("utf-8")).hexdigest()
-hash3 = hashlib.md5(f"elouan:password".encode("utf-8")).hexdigest()
+hash2 = hashlib.md5(f"john:password".encode("utf-8")).hexdigest()
+hash3 = hashlib.md5(f"francis:password".encode("utf-8")).hexdigest()
 
 titouan = signup("titouan", hash1, "Titouan Thomson")
-tymeo = signup("tymeo", hash2, "Tymeo Dupuy")
-elouan = signup("elouan", hash3, "Elouan Joule")
+tymeo = signup("john", hash2, "John Dupuy")
+elouan = signup("francis", hash3, "Francis Joule")
 elouan.description = "Bonjour, moi c'est elouan"
 tymeo.description = " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut urna dui, sollicitudin sed interdum sed, gravida eu est. Donec porta arcu at sollicitudin sodales. Nulla vulputate enim vulputate metus egestas mollis. Vivamus in bibendum lacus. Quisque vel condimentum turpis. Quisque sed mauris quis lorem gravida sodales in sed massa. Integer eget purus orci. Morbi at pulvinar leo, eu dignissim metus. Nullam vel magna eget velit aliquet imperdiet. Vivamus vel fermentum ex, sed tempus mauris. Pellentesque id vulputate risus. "
 elouan.save()

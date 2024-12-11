@@ -50,7 +50,8 @@ def update_profile(token : str, fields : dict, rights = None):
 def update_profile_picture(token : str, file, rights = None):
     im = Image.open(file)
     im : Image = utils.resize_image(im, 200)
-    im.save(f"storage/profile_picture/{rights.associated_user.id}.jpg")
+    rgbim = im.convert("RGB")
+    rgbim.save(f"storage/profile_picture/{rights.associated_user.id}.jpg")
     return "", 200
     
 def get_profile_picture_path(username : str):
